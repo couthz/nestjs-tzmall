@@ -4,6 +4,7 @@ import { isArray, isFunction, isNil, omit, pick } from 'lodash';
 
 import { EntityNotFoundError, In, IsNull, Not, SelectQueryBuilder } from 'typeorm';
 
+import { BaseService } from '@/modules/database/base';
 import { SelectTrashMode } from '@/modules/database/constants';
 import { paginate } from '@/modules/database/helpers';
 import { QueryHook } from '@/modules/database/types';
@@ -27,7 +28,9 @@ type FindParams = {
  * 文章数据操作
  */
 @Injectable()
-export class PostService {
+export class PostService extends BaseService<PostEntity, PostRepository, FindParams> {
+    protected enableTrash = true;
+
     constructor(
         protected repository: PostRepository,
         protected categoryRepository: CategoryRepository,
@@ -35,7 +38,9 @@ export class PostService {
         protected tagRepository: TagRepository,
         protected searchService?: SearchService,
         protected search_type: SearchType = 'against',
-    ) {}
+    ) {
+        super(repository);
+    }
 
     /**
      * 获取分页数据
@@ -47,7 +52,7 @@ export class PostService {
             return this.searchService.search(
                 options.search,
                 pick(options, ['trashed', 'page', 'limit']),
-            );
+            ) as any;
         }
         const qb = await this.buildListQuery(this.repository.buildBaseQB(), options, callback);
         return paginate(qb, options);

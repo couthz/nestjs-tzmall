@@ -1,7 +1,8 @@
 import { isNil } from 'lodash';
-import { ObjectLiteral, SelectQueryBuilder } from 'typeorm';
+import { DataSource, ObjectLiteral, ObjectType, Repository, SelectQueryBuilder } from 'typeorm';
 
-import { PaginateOptions, PaginateReturn } from './types';
+import { CUSTOM_REPOSITORY_METADATA } from './constants';
+import { OrderQueryType, PaginateOptions, PaginateReturn } from './types';
 
 /**
  * 分页函数
@@ -68,3 +69,43 @@ export function treePaginate<E extends ObjectLiteral>(
         items,
     };
 }
+
+/**
+ * 为查询添加排序,默认排序规则为DESC
+ * @param qb 原查询
+ * @param alias 别名
+ * @param orderBy 查询排序
+ */
+export const getOrderByQuery = <E extends ObjectLiteral>(
+    qb: SelectQueryBuilder<E>,
+    alias: string,
+    orderBy?: OrderQueryType,
+) => {
+    if (isNil(orderBy)) return qb;
+    if (typeof orderBy === 'string') return qb.orderBy(`${alias}.${orderBy}`, 'DESC');
+    if (Array.isArray(orderBy)) {
+        for (const item of orderBy) {
+            typeof item === 'string'
+                ? qb.addOrderBy(`${alias}.${item}`, 'DESC')
+                : qb.addOrderBy(`${alias}.${item.name}`, item.order);
+        }
+        return qb;
+    }
+    return qb.orderBy(`${alias}.${(orderBy as any).name}`, (orderBy as any).order);
+};
+
+/**
+ * 获取自定义Repository的实例
+ * @param dataSource 数据连接池
+ * @param Repo repository类
+ */
+export const getCustomRepository = <T extends Repository<E>, E extends ObjectLiteral>(
+    dataSource: DataSource,
+    Repo: ClassType<T>,
+): T => {
+    if (isNil(Repo)) return null;
+    const entity = Reflect.getMetadata(CUSTOM_REPOSITORY_METADATA, Repo);
+    if (!entity) return null;
+    const base = dataSource.getRepository<ObjectType<any>>(entity);
+    return new Repo(base.target, base.manager, base.queryRunner) as T;
+};
