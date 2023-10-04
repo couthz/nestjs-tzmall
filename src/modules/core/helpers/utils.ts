@@ -1,5 +1,15 @@
 import deepmerge from 'deepmerge';
 import { isNil } from 'lodash';
+/**
+ * 判断一个函数是否为异步函数
+ * @param callback
+ */
+export function isAsyncFn<R, A extends Array<any>>(
+    callback: (...asgs: A) => Promise<R> | R,
+): callback is (...asgs: A) => Promise<R> {
+    const AsyncFunction = (async () => {}).constructor;
+    return callback instanceof AsyncFunction === true;
+}
 
 /**
  * 用于请求验证中的boolean数据转义
