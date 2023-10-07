@@ -14,7 +14,7 @@ import { CreatePostDto, QueryPostDto, UpdatePostDto } from '../dtos';
 import { PostEntity } from '../entities';
 import { CategoryRepository, PostRepository, TagRepository } from '../repositories';
 
-import { SearchType } from '../types';
+import type { SearchType } from '../types';
 
 import { CategoryService } from './category.service';
 import { SearchService } from './search.service';

@@ -1,3 +1,4 @@
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import {
     FindTreeOptions,
     ObjectLiteral,
@@ -8,6 +9,29 @@ import {
 
 import { BaseRepository, BaseTreeRepository } from './base';
 import { OrderType, SelectTrashMode } from './constants';
+
+/**
+ * 自定义数据库配置
+ */
+export type DbConfig = {
+    common: Record<string, any>;
+    connections: Array<TypeOrmModuleOptions>;
+};
+
+/**
+ * 最终数据库配置
+ */
+export type DbOptions = Record<string, any> & {
+    common: Record<string, any>;
+    connections: TypeormOption[];
+};
+
+/**
+ * Typeorm连接配置
+ */
+export type TypeormOption = Omit<TypeOrmModuleOptions, 'name' | 'migrations'> & {
+    name: string;
+};
 
 export type QueryHook<Entity> = (
     qb: SelectQueryBuilder<Entity>,

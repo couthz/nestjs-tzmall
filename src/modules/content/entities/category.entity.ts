@@ -7,11 +7,12 @@ import {
     Index,
     OneToMany,
     PrimaryColumn,
-    Relation,
     Tree,
     TreeChildren,
     TreeParent,
 } from 'typeorm';
+
+import type { Relation } from 'typeorm';
 
 import { PostEntity } from './post.entity';
 

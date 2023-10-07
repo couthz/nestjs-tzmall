@@ -1,5 +1,6 @@
-import { ContentConfig } from '@/modules/content/types';
+import { createContentConfig } from '@/modules/content/helpers';
 
-export const content = (): ContentConfig => ({
+export const content = createContentConfig(() => ({
     searchType: 'meilli',
-});
+    htmlEnabled: false,
+}));

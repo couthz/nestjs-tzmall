@@ -11,9 +11,10 @@ import {
     ManyToOne,
     OneToMany,
     PrimaryColumn,
-    Relation,
     UpdateDateColumn,
 } from 'typeorm';
+
+import type { Relation } from 'typeorm';
 
 import { PostBodyType } from '../constants';
 

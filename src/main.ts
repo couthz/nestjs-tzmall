@@ -1,29 +1,18 @@
-import { NestFactory } from '@nestjs/core';
+import { isNil } from 'lodash';
 
-import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { WEBAPP, createData } from './constants';
+import { createApp, startApp } from './modules/core/helpers/app';
 
-import { useContainer } from 'class-validator';
-
-import { AppModule } from './app.module';
-
-async function bootstrap() {
-    // 使用fastify驱动
-    const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
-        // 启用跨域访问
-        cors: true,
-        // 只使用error和warn这两种输出，避免在控制台冗余输出
-        logger: ['error', 'warn'],
-    });
-    // 设置全局访问前缀
-    app.setGlobalPrefix('api');
-    // 使validator的约束可以使用nestjs的容器
-    useContainer(app.select(AppModule), {
-        fallbackOnErrors: true,
-    });
-    // 启动后的输出
-    await app.listen(3100, () => {
-        console.log();
-        console.log('api: http://localhost:3100');
-    });
-}
-bootstrap();
+startApp(createApp(WEBAPP, createData), ({ configure }) => async () => {
+    console.log();
+    const chalk = (await import('chalk')).default;
+    const appUrl = await configure.get<string>('app.url');
+    // 设置应用的API前缀,如果没有则与appUrl相同
+    const urlPrefix = await configure.get('app.prefix', undefined);
+    const apiUrl = !isNil(urlPrefix)
+        ? `${appUrl}${urlPrefix.length > 0 ? `/${urlPrefix}` : urlPrefix}`
+        : appUrl;
+    console.log(`- AppUrl: ${chalk.green.underline(appUrl)}`);
+    console.log();
+    console.log(`- ApiUrl: ${chalk.green.underline(apiUrl)}`);
+});

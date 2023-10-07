@@ -1,13 +1,7 @@
 import { Exclude, Expose, Type } from 'class-transformer';
-import {
-    Column,
-    DeleteDateColumn,
-    Entity,
-    Index,
-    ManyToMany,
-    PrimaryColumn,
-    Relation,
-} from 'typeorm';
+import { Column, DeleteDateColumn, Entity, Index, ManyToMany, PrimaryColumn } from 'typeorm';
+
+import type { Relation } from 'typeorm';
 
 import { PostEntity } from './post.entity';
 

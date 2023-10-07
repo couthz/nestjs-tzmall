@@ -1,8 +1,12 @@
-import { Module, DynamicModule, Type, Provider } from '@nestjs/common';
+import { Module, DynamicModule, Type, Provider, ModuleMetadata } from '@nestjs/common';
 
 import { TypeOrmModule, TypeOrmModuleOptions, getDataSourceToken } from '@nestjs/typeorm';
 
 import { DataSource, ObjectType } from 'typeorm';
+
+import { Configure } from '../config/configure';
+
+import { panic } from '../core/helpers';
 
 import { CUSTOM_REPOSITORY_METADATA } from './constants';
 import {
@@ -12,21 +16,32 @@ import {
     UniqueTreeConstraint,
     UniqueTreeExistConstraint,
 } from './constraints';
+import { DbOptions } from './types';
 
 @Module({})
 export class DatabaseModule {
-    static forRoot(configRegister: () => TypeOrmModuleOptions): DynamicModule {
+    static async forRoot(configure: Configure) {
+        if (!configure.has('database')) {
+            panic({ message: 'Database config not exists or not right!' });
+        }
+        const { connections } = await configure.get<DbOptions>('database');
+        const imports: ModuleMetadata['imports'] = [];
+        for (const dbOption of connections) {
+            imports.push(TypeOrmModule.forRoot(dbOption as TypeOrmModuleOptions));
+        }
+        const providers: ModuleMetadata['providers'] = [
+            DataExistConstraint,
+            UniqueConstraint,
+            UniqueExistContraint,
+            UniqueTreeConstraint,
+            UniqueTreeExistConstraint,
+        ];
+
         return {
             global: true,
             module: DatabaseModule,
-            imports: [TypeOrmModule.forRoot(configRegister())],
-            providers: [
-                DataExistConstraint,
-                UniqueConstraint,
-                UniqueExistContraint,
-                UniqueTreeConstraint,
-                UniqueTreeExistConstraint,
-            ],
+            imports,
+            providers,
         };
     }
 

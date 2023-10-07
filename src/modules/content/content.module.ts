@@ -1,10 +1,12 @@
-import { DynamicModule, Module, ModuleMetadata } from '@nestjs/common';
+import { Module, ModuleMetadata } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { Configure } from '../config/configure';
 import { DatabaseModule } from '../database/database.module';
 
 import * as controllers from './controllers';
 import * as entities from './entities';
+import { defaultContentConfig } from './helpers';
 import * as repositories from './repositories';
 import * as services from './services';
 import { PostService } from './services/post.service';
@@ -14,14 +16,10 @@ import { ContentConfig } from './types';
 
 @Module({})
 export class ContentModule {
-    static forRoot(configRegister?: () => ContentConfig): DynamicModule {
-        const config: Required<ContentConfig> = {
-            searchType: 'against',
-            ...(configRegister ? configRegister() : {}),
-        };
+    static async forRoot(configure: Configure) {
+        const config = await configure.get<ContentConfig>('content', defaultContentConfig);
         const providers: ModuleMetadata['providers'] = [
             ...Object.values(services),
-            SanitizeService,
             PostSubscriber,
             {
                 provide: PostService,
@@ -50,6 +48,7 @@ export class ContentModule {
                 },
             },
         ];
+        if (config.htmlEnabled) providers.push(SanitizeService);
         if (config.searchType === 'meilli') providers.push(services.SearchService);
         return {
             module: ContentModule,

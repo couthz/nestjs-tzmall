@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { isNil } from 'lodash';
 import MeiliSearch from 'meilisearch';
 
-import { MelliConfig } from './types';
+import type { MelliConfig } from './types';
 
 @Injectable()
 export class MeilliService {
