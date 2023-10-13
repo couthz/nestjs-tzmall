@@ -20,25 +20,25 @@
         "test:e2e": "jest --config ./test/jest-e2e.json"
     },
     "dependencies": {
+        "@fastify/static": "^6.11.2",
         "@nestjs/common": "^10.2.6",
         "@nestjs/config": "^3.1.1",
         "@nestjs/core": "^10.2.6",
         "@nestjs/platform-fastify": "^10.2.6",
         "@nestjs/swagger": "^7.1.12",
         "@nestjs/typeorm": "^10.0.0",
-        "chalk": "^5.3.0",
+        "chalk": "^4.1.2",
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.0",
         "deepmerge": "^4.3.1",
         "dotenv": "^16.3.1",
         "dotenv-expand": "^10.0.0",
         "fastify": "^4.23.2",
-        "find-up": "^6.3.0",
+        "find-up": "^5.0.0",
         "fs-extra": "^11.1.1",
         "lodash": "^4.17.21",
         "meilisearch": "^0.35.0",
         "mysql2": "^3.6.1",
-        "ora": "^7.0.1",
         "reflect-metadata": "^0.1.13",
         "rxjs": "^7.8.1",
         "sanitize-html": "^2.11.0",
@@ -95,5 +95,13 @@
         ],
         "coverageDirectory": "../coverage",
         "testEnvironment": "node"
+    },
+    "pnpm": {
+        "updateConfig": {
+            "ignoreDependencies": [
+                "find-up",
+                "chalk"
+            ]
+        }
     }
 }

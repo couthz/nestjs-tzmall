@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs';
 
 import { parse } from 'dotenv';
+import findUp from 'find-up';
 import { isFunction, isNil } from 'lodash';
 
 import { EnvironmentType } from './constants';
@@ -14,16 +15,15 @@ export class Env {
      */
     async load() {
         if (isNil(process.env.NODE_ENV)) process.env.NODE_ENV = EnvironmentType.PRODUCTION;
-        const { findUpSync } = await import('find-up');
         // 从当前运行应用的目录开始,向上查找.env文件,直到找到第一个文件为止
         // 没有找到则返回undefined
-        const search = [findUpSync(['.env'])];
+        const search = [findUp.sync(['.env'])];
         // 从当前运行应用的目录开始,向上寻找.env.{环境变量文件},直到找到第一个文件为止,如.env.local
         // 没有找到则返回undefined
         // 如果在production环境下则不查找
         // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         if (process.env.NODE_ENV !== EnvironmentType.PRODUCTION) {
-            search.push(findUpSync([`.env.${process.env.NODE_ENV}`]));
+            search.push(findUp.sync([`.env.${process.env.NODE_ENV}`]));
         }
         // 过滤掉undefined,把找到的环境变量文件放入envFiles数组
         const envFiles = search.filter((file) => file !== undefined) as string[];

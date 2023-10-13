@@ -1,8 +1,8 @@
-import { BadGatewayException, ModuleMetadata, Type } from '@nestjs/common';
+import { BadGatewayException, Global, Module, ModuleMetadata, Type } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { useContainer } from 'class-validator';
 
-import { isNil } from 'lodash';
+import { isNil, omit } from 'lodash';
 
 import { ConfigModule } from '@/modules/config/config.module';
 import { Configure } from '@/modules/config/configure';
@@ -44,9 +44,9 @@ export const createApp = (name: string, options: CreateOptions) => async (): Pro
         BootModule,
     });
     // 设置api前缀
-    if (apps[name].configure.has('app.prefix')) {
-        apps[name].container.setGlobalPrefix(await apps[name].configure.get<string>('app.prefix'));
-    }
+    // if (apps[name].configure.has('app.prefix')) {
+    //     apps[name].container.setGlobalPrefix(await apps[name].configure.get<string>('app.prefix'));
+    // }
     // 为class-validator添加容器以便在自定义约束中可以注入dataSource等依赖
     useContainer(apps[name].container.select(BootModule), {
         fallbackOnErrors: true,
@@ -64,14 +64,20 @@ export async function createBootModule(
     configure: Configure,
     options: Pick<CreateOptions, 'globals' | 'imports'>,
 ): Promise<Type<any>> {
-    const { globals = {}, imports: moduleCreator } = options;
+    const { globals = {} } = options;
     // 获取需要导入的模块
-    const modules = await moduleCreator(configure);
-    const imports: ModuleMetadata['imports'] = [
-        ...modules,
-        CoreModule.forRoot(),
-        ConfigModule.forRoot(configure),
-    ];
+    const modules = await options.imports(configure);
+    const imports: ModuleMetadata['imports'] = (
+        await Promise.all([...modules, CoreModule.forRoot(), ConfigModule.forRoot(configure)])
+    ).map((item) => {
+        if ('module' in item) {
+            const meta = omit(item, ['module', 'global']);
+            Module(meta)(item.module);
+            if (item.global) Global()(item.module);
+            return item.module;
+        }
+        return item;
+    });
     // 配置全局提供者
     const providers: ModuleMetadata['providers'] = [];
     if (globals.pipe !== null) {

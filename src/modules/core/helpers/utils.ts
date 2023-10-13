@@ -1,4 +1,5 @@
 import { Module, ModuleMetadata, Type } from '@nestjs/common';
+import chalk from 'chalk';
 import deepmerge from 'deepmerge';
 import { isNil } from 'lodash';
 
@@ -81,7 +82,6 @@ export function CreateModule(
  * @param option
  */
 export async function panic(option: PanicOption | string) {
-    const chalk = (await import('chalk')).default;
     console.log();
     if (typeof option === 'string') {
         console.log(chalk.red(`\n❌ ${option}`));

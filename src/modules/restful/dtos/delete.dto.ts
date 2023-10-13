@@ -7,6 +7,9 @@ import { DtoValidation } from '@/modules/core/decorators';
  */
 @DtoValidation()
 export class DeleteDto {
+    /**
+     * 待删除数据的ID列表
+     */
     @IsUUID(undefined, {
         each: true,
         message: 'ID格式错误',
@@ -15,5 +18,5 @@ export class DeleteDto {
         each: true,
         message: 'ID必须指定',
     })
-    ids: string[] = [];
+    ids: string[];
 }

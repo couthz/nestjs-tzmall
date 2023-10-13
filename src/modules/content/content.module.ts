@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Configure } from '../config/configure';
 import { DatabaseModule } from '../database/database.module';
 
-import * as controllers from './controllers';
 import * as entities from './entities';
 import { defaultContentConfig } from './helpers';
 import * as repositories from './repositories';
@@ -56,7 +55,6 @@ export class ContentModule {
                 TypeOrmModule.forFeature(Object.values(entities)),
                 DatabaseModule.forRepository(Object.values(repositories)),
             ],
-            controllers: Object.values(controllers),
             providers,
             exports: [
                 ...Object.values(services),

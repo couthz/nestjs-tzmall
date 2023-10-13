@@ -8,12 +8,9 @@ import { BaseService } from '@/modules/database/base';
 import { SelectTrashMode } from '@/modules/database/constants';
 import { treePaginate } from '@/modules/database/helpers';
 
-import {
-    CreateCategoryDto,
-    QueryCategoryDto,
-    QueryCategoryTreeDto,
-    UpdateCategoryDto,
-} from '../dtos';
+import { PaginateWithTrashedDto } from '@/modules/restful/dtos';
+
+import { CreateCategoryDto, QueryCategoryTreeDto, UpdateCategoryDto } from '../dtos';
 import { CategoryEntity } from '../entities';
 import { CategoryRepository } from '../repositories';
 
@@ -40,7 +37,7 @@ export class CategoryService extends BaseService<CategoryEntity, CategoryReposit
      * 获取分页数据
      * @param options 分页选项
      */
-    async paginate(options: QueryCategoryDto) {
+    async paginate(options: PaginateWithTrashedDto) {
         const { trashed = SelectTrashMode.NONE } = options;
         const tree = await this.repository.findTrees({
             withTrashed: trashed === SelectTrashMode.ALL || trashed === SelectTrashMode.ONLY,
