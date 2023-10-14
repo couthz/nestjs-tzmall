@@ -14,33 +14,28 @@ import { CoreModule } from '../core.module';
 import { AppFilter, AppIntercepter, AppPipe } from '../providers';
 import { App, AppConfig, CreateOptions } from '../types';
 
+import { createCommands } from './command';
 import { CreateModule } from './utils';
 
 /**
- * 应用列表
- */
-export const apps: Record<string, App> = {};
-
-/**
  * 创建一个应用
- * @param name 应用名称
  * @param options 创建选项
  */
-export const createApp = (name: string, options: CreateOptions) => async (): Promise<App> => {
+export const createApp = (options: CreateOptions) => async (): Promise<App> => {
     const { config, builder } = options;
     // 设置app的配置中心实例
-    apps[name] = { configure: new Configure() };
+    const app: App = { configure: new Configure(), commands: [] };
     // 初始化配置实例
-    await apps[name].configure.initilize(config.factories, config.storage);
+    await app.configure.initilize(config.factories, config.storage);
     // 如果没有app配置则使用默认配置
-    if (!apps[name].configure.has('app')) {
+    if (!app.configure.has('app')) {
         throw new BadGatewayException('App config not exists!');
     }
     // 创建启动模块
-    const BootModule = await createBootModule(apps[name].configure, options);
+    const BootModule = await createBootModule(app.configure, options);
     // 创建app的容器实例
-    apps[name].container = await builder({
-        configure: apps[name].configure,
+    app.container = await builder({
+        configure: app.configure,
         BootModule,
     });
     // 设置api前缀
@@ -48,11 +43,11 @@ export const createApp = (name: string, options: CreateOptions) => async (): Pro
     //     apps[name].container.setGlobalPrefix(await apps[name].configure.get<string>('app.prefix'));
     // }
     // 为class-validator添加容器以便在自定义约束中可以注入dataSource等依赖
-    useContainer(apps[name].container.select(BootModule), {
+    useContainer(app.container.select(BootModule), {
         fallbackOnErrors: true,
     });
-
-    return apps[name];
+    app.commands = await createCommands(options.commands, app as Required<App>);
+    return app;
 };
 
 /**
@@ -62,11 +57,11 @@ export const createApp = (name: string, options: CreateOptions) => async (): Pro
  */
 export async function createBootModule(
     configure: Configure,
-    options: Pick<CreateOptions, 'globals' | 'imports'>,
+    options: Pick<CreateOptions, 'globals' | 'modules'>,
 ): Promise<Type<any>> {
     const { globals = {} } = options;
     // 获取需要导入的模块
-    const modules = await options.imports(configure);
+    const modules = await options.modules(configure);
     const imports: ModuleMetadata['imports'] = (
         await Promise.all([...modules, CoreModule.forRoot(), ConfigModule.forRoot(configure)])
     ).map((item) => {
@@ -139,10 +134,11 @@ export const createAppConfig: (
  */
 export async function startApp(
     creator: () => Promise<App>,
-    listened?: (app: App) => () => Promise<void>,
+    listened?: (app: App, startTime: Date) => () => Promise<void>,
 ) {
+    const startTime = new Date();
     const app = await creator();
     const { container, configure } = app;
     const { port, host } = await configure.get<AppConfig>('app');
-    await container.listen(port, host, listened(app));
+    await container.listen(port, host, listened(app, startTime));
 }

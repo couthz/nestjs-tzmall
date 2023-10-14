@@ -81,13 +81,14 @@ export function CreateModule(
  * 输出命令行错误消息
  * @param option
  */
-export async function panic(option: PanicOption | string) {
+export function panic(option: PanicOption | string) {
     console.log();
     if (typeof option === 'string') {
         console.log(chalk.red(`\n❌ ${option}`));
         process.exit(1);
     }
-    const { error, message, exit = true } = option;
-    !isNil(error) ? console.log(chalk.red(error)) : console.log(chalk.red(`\n❌ ${message}`));
+    const { error, spinner, message, exit = true } = option;
+    if (error) console.log(chalk.red(error));
+    spinner ? spinner.fail(chalk.red(`\n❌${message}`)) : console.log(chalk.red(`\n❌ ${message}`));
     if (exit) process.exit(1);
 }

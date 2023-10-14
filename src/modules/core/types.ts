@@ -2,6 +2,10 @@ import { ModuleMetadata, PipeTransform, Type } from '@nestjs/common';
 
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 
+import { Ora } from 'ora';
+import { StartOptions } from 'pm2';
+import { CommandModule } from 'yargs';
+
 import { Configure } from '../config/configure';
 import { ConfigStorageOption } from '../config/types';
 
@@ -13,12 +17,18 @@ export type App = {
     container?: NestFastifyApplication;
     // 配置中心实例
     configure: Configure;
+    // 命令列表
+    commands: CommandModule<RecordAny, RecordAny>[];
 };
 
 /**
  * 应用配置
  */
 export interface AppConfig {
+    /**
+     * App名称
+     */
+    name: string;
     /**
      * 主机地址,默认为127.0.0.1
      */
@@ -47,6 +57,11 @@ export interface AppConfig {
      * 由url+api前缀生成的基础api url
      */
     prefix?: string;
+
+    /**
+     * PM2配置
+     */
+    pm2?: Omit<StartOptions, 'name' | 'cwd' | 'script' | 'args' | 'interpreter' | 'watch'>;
 }
 
 /**
@@ -63,11 +78,15 @@ export interface CreateOptions {
     /**
      * 返回值为需要导入的模块
      */
-    imports: (configure: Configure) => Promise<Required<ModuleMetadata['imports']>>;
+    modules: (configure: Configure) => Promise<Required<ModuleMetadata['imports']>>;
     /**
      * 应用构建器
      */
     builder: ContainerBuilder;
+    /**
+     * 应用命令
+     */
+    commands: () => CommandCollection;
     /**
      * 全局配置
      */
@@ -111,6 +130,10 @@ export interface PanicOption {
      */
     message: string;
     /**
+     * ora对象
+     */
+    spinner?: Ora;
+    /**
      * 抛出的异常信息
      */
     error?: any;
@@ -118,4 +141,26 @@ export interface PanicOption {
      * 是否退出进程
      */
     exit?: boolean;
+}
+
+/**
+ * 命令集合
+ */
+export type CommandCollection = Array<CommandItem<any, any>>;
+
+/**
+ * 命令构造器
+ */
+export type CommandItem<T = Record<string, any>, U = Record<string, any>> = (
+    app: Required<App>,
+) => Promise<CommandOption<T, U>>;
+
+/**
+ * 命令选项
+ */
+export interface CommandOption<T = RecordAny, U = RecordAny> extends CommandModule<T, U> {
+    /**
+     * 是否为执行后即退出进程的瞬时应用
+     */
+    instant?: boolean;
 }

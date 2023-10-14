@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 
-import { createData } from '@/constants';
+import { createOptions } from '@/constants';
 import { Configure } from '@/modules/config/configure';
 import { createBootModule } from '@/modules/core/helpers';
 
@@ -11,9 +11,10 @@ describe('AppController (e2e)', () => {
 
     beforeEach(async () => {
         const configure = new Configure();
-        configure.initilize(createData.config.factories, createData.config.storage);
+        const { config, modules } = createOptions;
+        configure.initilize(config.factories, config.storage);
         const BootModule = await createBootModule(configure, {
-            imports: createData.imports,
+            modules,
         });
         const moduleFixture: TestingModule = await Test.createTestingModule({
             imports: [BootModule],

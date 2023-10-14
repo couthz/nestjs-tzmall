@@ -14,16 +14,27 @@ export class Env {
      * 加载环境变量
      */
     async load() {
-        if (isNil(process.env.NODE_ENV)) process.env.NODE_ENV = EnvironmentType.PRODUCTION;
+        /**
+         * 默认在开发环境运行
+         */
+        if (isNil(process.env.NODE_ENV)) process.env.NODE_ENV = EnvironmentType.DEVELOPMENT;
         // 从当前运行应用的目录开始,向上查找.env文件,直到找到第一个文件为止
         // 没有找到则返回undefined
         const search = [findUp.sync(['.env'])];
         // 从当前运行应用的目录开始,向上寻找.env.{环境变量文件},直到找到第一个文件为止,如.env.local
+        // 如果是development、dev、production、prod环境则同时查找两个
         // 没有找到则返回undefined
-        // 如果在production环境下则不查找
         // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-        if (process.env.NODE_ENV !== EnvironmentType.PRODUCTION) {
-            search.push(findUp.sync([`.env.${process.env.NODE_ENV}`]));
+        if (this.isDev()) {
+            search.push(
+                findUp.sync([`.env.${EnvironmentType.DEVELOPMENT}`, `.env.${EnvironmentType.DEV}`]),
+            );
+        } else if (this.isProd()) {
+            search.push(
+                findUp.sync([`.env.${EnvironmentType.PRODUCTION}`, `.env.${EnvironmentType.PROD}`]),
+            );
+        } else {
+            search.push(findUp.sync([`.env.${this.run()}`]));
         }
         // 过滤掉undefined,把找到的环境变量文件放入envFiles数组
         const envFiles = search.filter((file) => file !== undefined) as string[];
@@ -55,6 +66,20 @@ export class Env {
      */
     run() {
         return process.env.NODE_ENV as EnvironmentType & RecordAny;
+    }
+
+    /**
+     * 是否在生产环境运行
+     */
+    isProd() {
+        return this.run() === EnvironmentType.PRODUCTION || this.run() === EnvironmentType.PROD;
+    }
+
+    /**
+     * 是否在开发环境运行
+     */
+    isDev() {
+        return this.run() === EnvironmentType.DEVELOPMENT || this.run() === EnvironmentType.DEV;
     }
 
     /**
