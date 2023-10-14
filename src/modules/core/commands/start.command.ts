@@ -33,7 +33,7 @@ export const createStartCommand: CommandItem<any, StartCommandArguments> = async
         typescript: {
             type: 'boolean',
             alias: 't',
-            describe: 'Run the .ts file directly(only bun be "true").',
+            describe: 'Run the .ts file directly.',
             default: false,
         },
         watch: {
