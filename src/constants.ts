@@ -1,3 +1,8 @@
+/* eslint-disable global-require */
+import { existsSync } from 'fs';
+
+import { join } from 'path';
+
 import { NestFactory } from '@nestjs/core';
 
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
@@ -6,7 +11,6 @@ import chalk from 'chalk';
 import { isNil } from 'lodash';
 
 import * as configs from './config';
-import metadata from './metadata';
 import { ContentModule } from './modules/content/content.module';
 import { App, CreateOptions } from './modules/core/types';
 import { DatabaseModule } from './modules/database/database.module';
@@ -37,6 +41,18 @@ export const createOptions: CreateOptions = {
         );
         if (!isNil(await configure.get<ApiConfig>('api', null))) {
             const restful = container.get(Restful);
+            // if use tsc
+            // await restful.factoryDocs(container);
+            // if use swc
+            // await restful.factoryDocs(container, metadata);
+            // if use bun cli
+            let metadata: () => Promise<Record<string, any>>;
+            if (existsSync(join(__dirname, 'metadata.js'))) {
+                metadata = require(join(__dirname, 'metadata.js')).default;
+            }
+            if (existsSync(join(__dirname, 'metadata.ts'))) {
+                metadata = require(join(__dirname, 'metadata.ts')).default;
+            }
             await restful.factoryDocs(container, metadata);
         }
         return container;

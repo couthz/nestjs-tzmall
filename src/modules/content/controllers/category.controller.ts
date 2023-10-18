@@ -1,3 +1,5 @@
+import { resolve } from 'path';
+
 import {
     Body,
     Controller,
@@ -12,6 +14,8 @@ import {
 } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
+
+import { readFileSync } from 'fs-extra';
 
 import { Depends } from '@/modules/restful/decorators';
 import { DeleteWithTrashDto, PaginateWithTrashedDto, RestoreDto } from '@/modules/restful/dtos';
@@ -33,6 +37,9 @@ export class CategoryController {
     @Get('tree')
     @SerializeOptions({ groups: ['category-tree'] })
     async tree(@Query() options: QueryCategoryTreeDto) {
+        // return 'ddd';
+        const data = readFileSync(resolve(__dirname, '../../../assets/ccc.txt'), 'utf8');
+        return data;
         return this.service.findTrees(options);
     }
 

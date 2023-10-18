@@ -128,7 +128,7 @@ export interface PanicOption {
     /**
      * 报错消息
      */
-    message: string;
+    message?: string;
     /**
      * ora对象
      */

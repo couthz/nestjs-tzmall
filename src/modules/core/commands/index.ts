@@ -1,3 +1,3 @@
 export * from './start.command';
-export * from './restart.commnd';
-export * from './nest.command';
+export * from './build.command';
+// export * from './nest.command';
