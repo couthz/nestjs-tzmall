@@ -1,3 +1,5 @@
+import { readFileSync } from 'fs';
+
 import { resolve } from 'path';
 
 import {
@@ -14,8 +16,6 @@ import {
 } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
-
-import { readFileSync } from 'fs-extra';
 
 import { Depends } from '@/modules/restful/decorators';
 import { DeleteWithTrashDto, PaginateWithTrashedDto, RestoreDto } from '@/modules/restful/dtos';

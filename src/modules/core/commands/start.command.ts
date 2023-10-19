@@ -30,14 +30,14 @@ export const createStartCommand: CommandItem<any, StartCommandArguments> = async
         },
         prod: {
             type: 'boolean',
-            alias: 'r',
-            describe: 'Retart app(only pm2),pm2 will auto run start if process not exists.',
+            alias: 'p',
+            describe: 'Start app in production by pm2.',
             default: false,
         },
         restart: {
             type: 'boolean',
-            alias: 'p',
-            describe: 'Start app in production by pm2.',
+            alias: 'r',
+            describe: 'Retart app(only pm2),pm2 will auto run start if process not exists.',
             default: false,
         },
         typescript: {

@@ -36,5 +36,5 @@
         },
         "types": ["bun-types", "@types/jest"]
     },
-    "include": ["src", "test", "typings/**/*.d.ts", "**.js", "trashed/restart.commnd.ts"]
+    "include": ["src", "test", "typings/**/*.d.ts", "**.js"]
 }

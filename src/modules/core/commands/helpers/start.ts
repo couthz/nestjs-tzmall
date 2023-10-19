@@ -8,6 +8,7 @@ import { PluginMetadataGenerator } from '@nestjs/cli/lib/compiler/plugins';
 import { ReadonlyVisitor } from '@nestjs/swagger/dist/plugin';
 import { PluginOptions } from '@nestjs/swagger/dist/plugin/merge-options';
 import { Subprocess } from 'bun';
+import chalk from 'chalk';
 import { get, isNil, pick } from 'lodash';
 import pm2 from 'pm2';
 import { Arguments } from 'yargs';
@@ -87,6 +88,23 @@ export const startProd = async (
         config,
         script,
     );
+    if (pm2Config.exec_mode === 'cluster' && args.typescript) {
+        console.log(
+            chalk.yellowBright(
+                'Cannot directly use bun to run ts code in cluster mode, so it will automatically change to fork mode.',
+            ),
+        );
+        console.log();
+        console.log(
+            chalk.bgCyanBright(
+                chalk.blackBright(
+                    'If you really need the app to be started in cluster mode, be sure to compile it into js first, and then add the --no-ts arg when running',
+                ),
+            ),
+        );
+        console.log();
+        pm2Config.exec_mode = 'fork';
+    }
     const connectCallback = (error?: any) => {
         if (!isNil(error)) {
             console.error(error);
@@ -129,7 +147,7 @@ export const generateSwaggerMetadata = (
     const swaggerPlugin = cliPlugins.find(
         (item) => item === '@nestjs/swagger' || (item as any).name === '@nestjs/swagger',
     );
-    if (!isNil(swaggerPlugin)) {
+    if (!isNil(swaggerPlugin) && args.typescript) {
         const srcPath = join(config.paths.cwd, config.paths.src);
         const generator = new PluginMetadataGenerator();
         let swaggerPluginOption: PluginOptions = {};
@@ -145,19 +163,3 @@ export const generateSwaggerMetadata = (
         });
     }
 };
-
-// /**
-//  * 非生产环境(开发环境等)下使用nest cli启动应用
-//  * 逻辑如下:
-//  * 如果设置了优先使用bun启动则使用bun运行nest cli
-//  * 如果不是则使用node fork一个子进程运行nest cli
-//  * @param args
-//  * @param script
-//  */
-// export const startDev = async (args: yargs.Arguments<StartCommandArguments>) => {
-//     const params: string[] = ['start'];
-//     if (args.watch) params.push('-w');
-//     if (args.debug) params.push('-d');
-//     const child = spawn(scripts.nest, params, subpOption.node);
-//     child.on('exit', () => exit());
-// };

@@ -16,7 +16,7 @@ export async function createCommands(
         handler: async (args: yargs.Arguments<RecordAny>) => {
             await app.container.close();
             await command.handler(args);
-            // if (command.instant) process.exit();
+            if (command.instant) process.exit();
         },
     }));
 }
