@@ -3,10 +3,22 @@ import { SpawnOptions as NodeSpawnOptions } from 'child_process';
 
 import { Configuration as NestCLIConfig } from '@nestjs/cli/lib/configuration';
 import type { SpawnOptions as BunSpawnOptions } from 'bun';
-import * as ts from 'typescript';
+import { StartOptions } from 'pm2';
+import ts from 'typescript';
+
+export type BuildCommandArguments = Pick<StartCommandArguments, 'tsConfig' | 'nestConfig'> & {
+    watch?: string;
+    preserveWatchOutput?: boolean;
+};
 
 export type StartCommandArguments = {
+    /**
+     * nest-cli.json的文件路径(相对于当前运行目录)
+     */
     nestConfig?: string;
+    /**
+     * 用于编译和运行的tsconfig.build.json的文件路径(相对于当前运行目录)
+     */
     tsConfig?: string;
     /**
      * 使用直接运行TS文件的入口文件,默认为main.ts
@@ -38,27 +50,11 @@ export type StartCommandArguments = {
      * 是否重启应用(PM2进程)
      */
     restart?: boolean;
-};
 
-export type BuildCommandArguments = Pick<StartCommandArguments, 'tsConfig' | 'nestConfig'> & {
-    watch?: string;
-    preserveWatchOutput?: boolean;
-};
-
-export type RestartCommandArguments = {
     /**
-     * 使用restart模式强制重启整个应用
+     * PM2配置
      */
-    force?: boolean;
-};
-
-export type NestCommandArguments = {
-    name: string;
-    cmds?: string[];
-};
-
-export type Pm2ConfigParams = Pick<StartCommandArguments, 'typescript' | 'watch'> & {
-    command: string;
+    pm2?: Omit<StartOptions, 'name' | 'cwd' | 'script' | 'args' | 'interpreter' | 'watch'>;
 };
 
 /**
@@ -75,3 +71,7 @@ export interface CLIConfig {
         node: NodeSpawnOptions;
     };
 }
+
+export type Pm2Option = Pick<StartCommandArguments, 'typescript' | 'watch'> & {
+    command: string;
+};

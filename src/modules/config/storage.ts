@@ -59,7 +59,7 @@ export class Storage {
     set<T>(key: string, value: T) {
         ensureFileSync(this.path);
         set(this._config, key, value);
-        writeFileSync(this.path, JSON.stringify(this.path, null, 4));
+        writeFileSync(this.path, JSON.stringify(this._config, null, 4));
     }
 
     /**

@@ -1,8 +1,9 @@
-import yargs from 'yargs';
+import { Arguments } from 'yargs';
 
 import { CommandItem } from '../types';
 
-import { getCLIConfig, start, startProd } from './helpers';
+import { start, startPM2 } from './helpers/start';
+import { getCLIConfig } from './helpers/config';
 import { StartCommandArguments } from './types';
 
 export const createStartCommand: CommandItem<any, StartCommandArguments> = async (app) => ({
@@ -59,10 +60,10 @@ export const createStartCommand: CommandItem<any, StartCommandArguments> = async
             default: false,
         },
     },
-    handler: async (args: yargs.Arguments<StartCommandArguments>) => {
+    handler: async (args: Arguments<StartCommandArguments>) => {
         const { configure } = app;
         const config = getCLIConfig(args.tsConfig, args.nestConfig, args.entry);
-        if (args.prod || args.restart) await startProd(configure, args, config);
+        if (args.prod || args.restart) await startPM2(configure, args, config);
         else await start(args, config);
     },
 });

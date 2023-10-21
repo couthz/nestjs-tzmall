@@ -23,6 +23,7 @@ import { CreateModule } from './utils';
  */
 export const createApp = (options: CreateOptions) => async (): Promise<App> => {
     const { config, builder } = options;
+
     // 设置app的配置中心实例
     const app: App = { configure: new Configure(), commands: [] };
     // 初始化配置实例
@@ -39,8 +40,8 @@ export const createApp = (options: CreateOptions) => async (): Promise<App> => {
         BootModule,
     });
     // 设置api前缀
-    // if (apps[name].configure.has('app.prefix')) {
-    //     apps[name].container.setGlobalPrefix(await apps[name].configure.get<string>('app.prefix'));
+    // if (app.configure.has('app.prefix')) {
+    //     app.container.setGlobalPrefix(await app.configure.get<string>('app.prefix'));
     // }
     // 为class-validator添加容器以便在自定义约束中可以注入dataSource等依赖
     useContainer(app.container.select(BootModule), {
@@ -63,7 +64,11 @@ export async function createBootModule(
     // 获取需要导入的模块
     const modules = await options.modules(configure);
     const imports: ModuleMetadata['imports'] = (
-        await Promise.all([...modules, CoreModule.forRoot(), ConfigModule.forRoot(configure)])
+        await Promise.all([
+            ...modules,
+            ConfigModule.forRoot(configure),
+            await CoreModule.forRoot(configure),
+        ])
     ).map((item) => {
         if ('module' in item) {
             const meta = omit(item, ['module', 'global']);

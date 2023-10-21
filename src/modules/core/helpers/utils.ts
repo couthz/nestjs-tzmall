@@ -4,6 +4,21 @@ import deepmerge from 'deepmerge';
 import { isNil } from 'lodash';
 
 import { PanicOption } from '../types';
+
+/**
+ * 生成只包含字母的固定长度的字符串
+ * @param length
+ */
+export const getRandomCharString = (length: number) => {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+};
+
 /**
  * 判断一个函数是否为异步函数
  * @param callback
@@ -81,14 +96,13 @@ export function CreateModule(
  * 输出命令行错误消息
  * @param option
  */
-export function panic(option: PanicOption | string) {
+export async function panic(option: PanicOption | string) {
     console.log();
     if (typeof option === 'string') {
         console.log(chalk.red(`\n❌ ${option}`));
         process.exit(1);
     }
-    const { error, spinner, message, exit = true } = option;
-    if (error) console.log(chalk.red(error));
-    spinner ? spinner.fail(chalk.red(`\n❌${message}`)) : console.log(chalk.red(`\n❌ ${message}`));
+    const { error, message, exit = true } = option;
+    !isNil(error) ? console.log(chalk.red(error)) : console.log(chalk.red(`\n❌ ${message}`));
     if (exit) process.exit(1);
 }

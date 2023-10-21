@@ -80,13 +80,13 @@ export interface CreateOptions {
      */
     modules: (configure: Configure) => Promise<Required<ModuleMetadata['imports']>>;
     /**
-     * 应用构建器
-     */
-    builder: ContainerBuilder;
-    /**
      * 应用命令
      */
     commands: () => CommandCollection;
+    /**
+     * 应用构建器
+     */
+    builder: ContainerBuilder;
     /**
      * 全局配置
      */
@@ -142,7 +142,6 @@ export interface PanicOption {
      */
     exit?: boolean;
 }
-
 /**
  * 命令集合
  */

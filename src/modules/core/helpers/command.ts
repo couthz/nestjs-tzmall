@@ -1,19 +1,20 @@
 import chalk from 'chalk';
-import yargs, { CommandModule } from 'yargs';
+import yargs, { Arguments, CommandModule } from 'yargs';
+
 import { hideBin } from 'yargs/helpers';
 
-import * as appCommands from '../commands';
+import * as coreCommands from '../commands';
 import { App, CommandCollection } from '../types';
 
 export async function createCommands(
     factory: () => CommandCollection,
     app: Required<App>,
 ): Promise<CommandModule<any, any>[]> {
-    const collection: CommandCollection = [...factory(), ...Object.values(appCommands)];
+    const collection: CommandCollection = [...factory(), ...Object.values(coreCommands)];
     const commands = await Promise.all(collection.map(async (command) => command(app)));
     return commands.map((command) => ({
         ...command,
-        handler: async (args: yargs.Arguments<RecordAny>) => {
+        handler: async (args: Arguments<RecordAny>) => {
             await app.container.close();
             await command.handler(args);
             if (command.instant) process.exit();

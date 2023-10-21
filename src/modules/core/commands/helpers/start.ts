@@ -1,16 +1,10 @@
-/* eslint-disable import/no-extraneous-dependencies */
-
-import { join } from 'path';
-
 import { exit } from 'process';
 
-import { PluginMetadataGenerator } from '@nestjs/cli/lib/compiler/plugins';
-import { ReadonlyVisitor } from '@nestjs/swagger/dist/plugin';
-import { PluginOptions } from '@nestjs/swagger/dist/plugin/merge-options';
 import { Subprocess } from 'bun';
 import chalk from 'chalk';
-import { get, isNil, pick } from 'lodash';
+import { isNil, pick } from 'lodash';
 import pm2 from 'pm2';
+
 import { Arguments } from 'yargs';
 
 import { Configure } from '@/modules/config/configure';
@@ -19,7 +13,8 @@ import { AppConfig } from '../../types';
 import { CLIConfig, StartCommandArguments } from '../types';
 
 import { Asset } from './asset';
-import { getPm2Config } from './utils';
+import { getPm2Config } from './config';
+import { generateSwaggerMetadata } from './swagger';
 
 /**
  * 正常启动应用
@@ -41,7 +36,7 @@ export const start = async (args: Arguments<StartCommandArguments>, config: CLIC
     params.push(script);
     let child: Subprocess;
     if (args.watch) {
-        if (args.typescript) generateSwaggerMetadata(args, config, true);
+        if (args.typescript) generateSwaggerMetadata(args, config, false);
         const asseter = new Asset();
         const restart = () => {
             if (!isNil(child)) child.kill();
@@ -72,7 +67,7 @@ export const start = async (args: Arguments<StartCommandArguments>, config: CLIC
  * @param args
  * @param script
  */
-export const startProd = async (
+export const startPM2 = async (
     configure: Configure,
     args: Arguments<StartCommandArguments>,
     config: CLIConfig,
@@ -133,33 +128,4 @@ export const startProd = async (
             ? pm2.restart(name, restartCallback)
             : pm2.start(pm2Config, (serr) => startCallback(serr));
     });
-};
-
-export const generateSwaggerMetadata = (
-    args: Arguments<StartCommandArguments>,
-    config: CLIConfig,
-    watch: boolean,
-) => {
-    const cliPlugins = get(config.options.nest, 'compilerOptions.plugins', []) as (
-        | string
-        | RecordAny
-    )[];
-    const swaggerPlugin = cliPlugins.find(
-        (item) => item === '@nestjs/swagger' || (item as any).name === '@nestjs/swagger',
-    );
-    if (!isNil(swaggerPlugin) && args.typescript) {
-        const srcPath = join(config.paths.cwd, config.paths.src);
-        const generator = new PluginMetadataGenerator();
-        let swaggerPluginOption: PluginOptions = {};
-        if (typeof swaggerPlugin !== 'string' && 'options' in swaggerPlugin) {
-            swaggerPluginOption = swaggerPlugin.options;
-        }
-        generator.generate({
-            visitors: [new ReadonlyVisitor({ ...swaggerPluginOption, pathToSource: srcPath })],
-            outputDir: srcPath,
-            watch,
-            tsconfigPath: args.tsConfig,
-            printDiagnostics: false,
-        });
-    }
 };

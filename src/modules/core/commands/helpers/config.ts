@@ -7,15 +7,13 @@ import { exit } from 'process';
 import { Configuration as NestCLIConfig } from '@nestjs/cli/lib/configuration';
 import { get, isNil, omit } from 'lodash';
 import { StartOptions } from 'pm2';
-import * as ts from 'typescript';
+import ts from 'typescript';
 
 import { Configure } from '@/modules/config/configure';
 
 import { deepMerge, panic } from '../../helpers';
 import { AppConfig } from '../../types';
-
-import { CLIConfig, Pm2ConfigParams } from '../types';
-
+import { CLIConfig, Pm2Option } from '../types';
 /**
  * 执行路径(应用根目录)
  */
@@ -87,17 +85,9 @@ export const getCLIConfig = (
     };
 };
 
-/**
- * 获取pm2选项配置
- * 如果是直接运行ts源码或者设置了优先使用bun,则使用bun作为启动器
- * @param configure
- * @param option
- * @param script
- * @param bun
- */
 export const getPm2Config = async (
     configure: Configure,
-    option: Pm2ConfigParams,
+    option: Pm2Option,
     config: CLIConfig,
     script: string,
 ): Promise<StartOptions> => {

@@ -6,10 +6,10 @@ import { Arguments } from 'yargs';
 
 import { CommandItem } from '../types';
 
-import { getCLIConfig } from './helpers';
-import { BuildCommandArguments, NestCommandArguments } from './types';
+import { getCLIConfig } from './helpers/config';
+import { BuildCommandArguments } from './types';
 
-export const createBuildCommand: CommandItem<any, NestCommandArguments> = async (app) => ({
+export const createBuildCommand: CommandItem<any, BuildCommandArguments> = async (app) => ({
     command: ['build', 'b'],
     describe: 'Build application by nest cli.',
     builder: {
