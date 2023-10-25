@@ -12,6 +12,7 @@ import { isNil } from 'lodash';
 import * as configs from './config';
 import { ContentModule } from './modules/content/content.module';
 import { CreateOptions } from './modules/core/types';
+import * as dbCommands from './modules/database/commands';
 import { DatabaseModule } from './modules/database/database.module';
 import { MeilliModule } from './modules/meilisearch/melli.module';
 import { Restful } from './modules/restful/restful';
@@ -26,7 +27,7 @@ export const createOptions: CreateOptions = {
         RestfulModule.forRoot(configure),
         ContentModule.forRoot(configure),
     ],
-    commands: () => [],
+    commands: () => [...Object.values(dbCommands)],
     globals: {},
     builder: async ({ configure, BootModule }) => {
         const container = await NestFactory.create<NestFastifyApplication>(

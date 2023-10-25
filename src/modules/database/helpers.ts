@@ -1,6 +1,11 @@
+import { resolve } from 'path';
+
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type';
 import { isNil } from 'lodash';
 import { DataSource, ObjectLiteral, ObjectType, Repository, SelectQueryBuilder } from 'typeorm';
 
+import { Configure } from '../config/configure';
 import { createConnectionOptions } from '../config/helpers';
 import { ConfigureFactory, ConfigureRegister } from '../config/types';
 
@@ -132,6 +137,9 @@ export const createDbOptions = (options: DbConfig) => {
             {
                 charset: 'utf8mb4',
                 logging: ['error'],
+                paths: {
+                    migration: resolve(__dirname, '../../database'),
+                },
             },
             options.common ?? {},
             'replace',
@@ -145,7 +153,7 @@ export const createDbOptions = (options: DbConfig) => {
             newOptions.common,
             {
                 ...newOption,
-                autoLoadEntities: true,
+                autoLoadEntities: false,
             } as any,
             'replace',
         ) as TypeormOption;
@@ -170,3 +178,36 @@ export const createDbConfig: (
         connections: [],
     }),
 });
+
+/**
+ * 在模块上注册entity
+ * @param configure 配置类实例
+ * @param entities entity类列表
+ * @param dataSource 数据连接名称,默认为default
+ */
+export const addEntities = async (
+    configure: Configure,
+    entities: EntityClassOrSchema[] = [],
+    dataSource = 'default',
+) => {
+    const database = await configure.get<DbOptions>('database');
+    if (isNil(database)) throw new Error(`Typeorm have not any config!`);
+    const dbConfig = database.connections.find(({ name }) => name === dataSource);
+    if (isNil(dbConfig)) throw new Error(`Database connection named ${dataSource} not exists!`);
+    const oldEntities = (dbConfig.entities ?? []) as ObjectLiteral[];
+    /**
+     * 更新数据库配置,添加上新的模型
+     */
+    configure.set(
+        'database.connections',
+        database.connections.map((connection) =>
+            connection.name === dataSource
+                ? {
+                      ...connection,
+                      entities: [...entities, ...oldEntities],
+                  }
+                : connection,
+        ),
+    );
+    return TypeOrmModule.forFeature(entities, dataSource);
+};
