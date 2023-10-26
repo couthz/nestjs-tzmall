@@ -6,7 +6,7 @@ import { createDbConfig } from '@/modules/database/helpers';
 
 export const database = createDbConfig((configure) => ({
     common: {
-        synchronize: true,
+        // synchronize: true,
     },
     connections: [
         {

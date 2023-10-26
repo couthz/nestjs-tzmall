@@ -153,7 +153,8 @@ export const createDbOptions = (options: DbConfig) => {
             newOptions.common,
             {
                 ...newOption,
-                autoLoadEntities: false,
+                autoLoadEntities: true,
+                synchronize: false,
             } as any,
             'replace',
         ) as TypeormOption;

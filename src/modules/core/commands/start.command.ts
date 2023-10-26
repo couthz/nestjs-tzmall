@@ -2,8 +2,8 @@ import { Arguments } from 'yargs';
 
 import { CommandItem } from '../types';
 
-import { start, startPM2 } from './helpers/start';
 import { getCLIConfig } from './helpers/config';
+import { start, startPM2 } from './helpers/start';
 import { StartCommandArguments } from './types';
 
 export const createStartCommand: CommandItem<any, StartCommandArguments> = async (app) => ({
