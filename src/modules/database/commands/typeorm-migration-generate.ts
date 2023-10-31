@@ -73,31 +73,7 @@ export class TypeormMigrationGenerate {
             if (!upSqls.length) {
                 console.log(chalk.green(`No changes in database schema were found`));
                 process.exit(0);
-                // if (args.check) {
-                //     console.log(chalk.green(`No changes in database schema were found`));
-                //     process.exit(0);
-                // } else {
-                //     console.log(
-                //         chalk.yellow(
-                //             `No changes in database schema were found - cannot generate a migration. To create a new empty migration use "db:migration:create" command`,
-                //         ),
-                //     );
-                //     process.exit(1);
-                // }
             }
-            // const fileContent = args.outputJs
-            //     ? TypeormMigrationGenerate.getJavascriptTemplate(
-            //           args.name,
-            //           timestamp,
-            //           upSqls,
-            //           downSqls.reverse(),
-            //       )
-            //     : TypeormMigrationGenerate.getTemplate(
-            //           args.name,
-            //           timestamp,
-            //           upSqls,
-            //           downSqls.reverse(),
-            //       );
 
             const fileContent = TypeormMigrationGenerate.getTemplate(
                 args.name,
@@ -174,32 +150,6 @@ ${downSqls.join(`
 }
 
 module.exports = ${migrationName}
-`;
-    }
-
-    protected static getJavascriptTemplate(
-        name: string,
-        timestamp: number,
-        upSqls: string[],
-        downSqls: string[],
-    ): string {
-        const migrationName = `${camelCase(name, true)}${timestamp}`;
-
-        return `const { MigrationInterface, QueryRunner } = require("typeorm");
-
-module.exports = class ${migrationName} {
-    name = '${migrationName}'
-
-    async up(queryRunner) {
-${upSqls.join(`
-`)}
-    }
-
-    async down(queryRunner) {
-${downSqls.join(`
-`)}
-    }
-}
 `;
     }
 

@@ -24,7 +24,8 @@ export const getDefaultAppConfig = (configure: Configure) => ({
     port: configure.env.get('APP_PORT', (v) => toNumber(v), 3000),
     https: configure.env.get('APP_SSL', (v) => toBoolean(v), false),
     timezone: configure.env.get('APP_TIMEZONE', 'Asia/Shanghai'),
-    locale: configure.env.get('APP_LOCALE', 'zh-cn'),
+    locale: configure.env.get('APP_LOCALE', 'zh_CN'),
+    fallbackLocale: configure.env.get('APP_FALLBACK_LOCALE', 'en'),
 });
 
 export const listened: (app: App, startTime: Date) => () => Promise<void> =

@@ -2,6 +2,8 @@
  * 数据库配置
  */
 
+import { ContentFactory } from '@/database/factories/content.factory';
+import ContentSeeder from '@/database/seeders/content.seeder';
 import { createDbConfig } from '@/modules/database/helpers';
 
 export const database = createDbConfig((configure) => ({
@@ -17,6 +19,8 @@ export const database = createDbConfig((configure) => ({
             username: 'root',
             password: '12345678',
             database: '3r',
+            factories: [ContentFactory],
+            seeders: [ContentSeeder],
         },
         // {
         // 以下为sqlite配置
