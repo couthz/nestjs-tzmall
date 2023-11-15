@@ -3,7 +3,7 @@ import { Module, ModuleMetadata } from '@nestjs/common';
 import { Configure } from '../config/configure';
 import { DatabaseModule } from '../database/database.module';
 
-import { addEntities } from '../database/helpers';
+import { addEntities, addSubscribers } from '../database/helpers';
 
 import * as entities from './entities';
 import { defaultContentConfig } from './helpers';
@@ -11,7 +11,7 @@ import * as repositories from './repositories';
 import * as services from './services';
 import { PostService } from './services/post.service';
 import { SanitizeService } from './services/sanitize.service';
-import { PostSubscriber } from './subscribers';
+import * as subscribers from './subscribers';
 import { ContentConfig } from './types';
 
 @Module({})
@@ -20,7 +20,7 @@ export class ContentModule {
         const config = await configure.get<ContentConfig>('content', defaultContentConfig);
         const providers: ModuleMetadata['providers'] = [
             ...Object.values(services),
-            PostSubscriber,
+            ...(await addSubscribers(configure, Object.values(subscribers))),
             {
                 provide: PostService,
                 inject: [

@@ -219,6 +219,10 @@ export interface MigrationRevertOptions {
  */
 type DbAdditionalOption = {
     /**
+     * 是否在启动应用后自动运行迁移
+     */
+    autoMigrate?: boolean;
+    /**
      * 填充类
      */
     seedRunner?: SeederConstructor;
