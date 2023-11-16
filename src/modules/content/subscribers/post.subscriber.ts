@@ -23,12 +23,10 @@ export class PostSubscriber extends BaseSubscriber<PostEntity> {
      */
     async afterLoad(entity: PostEntity) {
         const configure = app.container.get(Configure, { strict: false });
-        const sanitizeService = app.container.get(SanitizeService, { strict: false });
-        if (
-            (await configure.get('content.htmlEnabled')) &&
-            !isNil(sanitizeService) &&
-            entity.type === PostBodyType.HTML
-        ) {
+        const sanitizeService = (await configure.get('content.htmlEnabled'))
+            ? app.container.get(SanitizeService)
+            : undefined;
+        if (!isNil(sanitizeService) && entity.type === PostBodyType.HTML) {
             entity.body = sanitizeService.sanitize(entity.body);
         }
     }

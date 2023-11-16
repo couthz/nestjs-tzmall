@@ -5,7 +5,7 @@ import { Type } from '@nestjs/common';
 import { ensureFileSync, readFileSync } from 'fs-extra';
 
 import { get, isNil, set } from 'lodash';
-import { DataSource } from 'typeorm';
+import { DataSource, EntityManager } from 'typeorm';
 
 import YAML from 'yaml';
 
@@ -20,8 +20,9 @@ export class SeedRunner extends BaseSeeder {
      * 运行一个连接的填充类
      * @param _factory
      * @param _dataSource
+     * @param _em
      */
-    async run(_factory: DbFactory, _dataSource: DataSource): Promise<any> {
+    async run(_factory: DbFactory, _dataSource: DataSource, _em: EntityManager): Promise<any> {
         let seeders: Type<any>[] = ((await this.getDbConfig()) as any).seeders ?? [];
         if (!this.ignoreLock) {
             const seedLockFile = resolve(__dirname, '../../../..', 'seed-lock.yml');

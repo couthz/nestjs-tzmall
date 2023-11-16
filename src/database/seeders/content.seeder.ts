@@ -115,12 +115,9 @@ export default class ContentSeeder extends BaseSeeder {
 
             await this.genRandomComments(post, Math.floor(Math.random() * 5));
         }
-        const redoms = await this.factorier(PostEntity)<IPostFactoryOptions>({
+        await this.factorier(PostEntity)<IPostFactoryOptions>({
             tags: getRandListData(allTags),
             category: getRandItemData(allCategories),
         }).createMany(23);
-        for (const redom of redoms) {
-            await this.genRandomComments(redom, Math.floor(Math.random() * 2));
-        }
     }
 }
