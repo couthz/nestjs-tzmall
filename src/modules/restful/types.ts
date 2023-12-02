@@ -56,7 +56,7 @@ export interface ApiDocSource {
     tags?: (string | TagOption)[];
 }
 
-interface TagOption {
+export interface TagOption {
     name: string;
     description?: string;
     externalDocs?: ExternalDocumentationObject;

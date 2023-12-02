@@ -14,4 +14,5 @@
     "typescript.tsdk": "node_modules/typescript/lib",
     // 默认使用pnpm作为包安装的管理工具
     "npm.packageManager": "pnpm",
+    "editor.inlineSuggest.showToolbar": "always",
 }

@@ -17,6 +17,9 @@ import {
     DataSource,
 } from 'typeorm';
 
+import { Configure } from '@/modules/config/configure';
+import { app } from '@/modules/core/helpers';
+
 import { getCustomRepository } from '../helpers';
 
 import { RepositoryType } from '../types';
@@ -47,8 +50,21 @@ export abstract class BaseSubscriber<E extends ObjectLiteral>
      * 构造函数
      * @param dataSource 数据连接池
      */
-    constructor(@Optional() protected dataSource?: DataSource) {
+    constructor(
+        @Optional() protected dataSource?: DataSource,
+        @Optional() protected _configure?: Configure,
+    ) {
         if (!isNil(this.dataSource)) this.dataSource.subscribers.push(this);
+    }
+
+    get configure(): Configure {
+        return !isNil(this._configure)
+            ? this._configure
+            : app.container.get(Configure, { strict: false });
+    }
+
+    get container() {
+        return app.container;
     }
 
     protected getDataSource(event: SubscriberEvent<E>) {
