@@ -4,6 +4,7 @@
 # compiled output
 /dist
 /node_modules
+/metadata.ts
 
 # Logs
 logs
