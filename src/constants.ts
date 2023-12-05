@@ -10,7 +10,6 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 import { isNil } from 'lodash';
 
 import * as configs from './config';
-import { ContentModule } from './modules/content/content.module';
 import { CreateOptions } from './common/core/types';
 import * as dbCommands from './common/database/commands';
 import { DatabaseModule } from './common/database/database.module';
@@ -31,7 +30,6 @@ export const createOptions: CreateOptions = {
         DatabaseModule.forRoot(configure),
         MeilliModule.forRoot(configure),
         RestfulModule.forRoot(configure),
-        ContentModule.forRoot(configure),
         ProdModule.forRoot(configure),
         ShopcartModule.forRoot(configure),
         RedisClientModule.forRoot(configure),
