@@ -17,11 +17,11 @@ import {
 
 import { isNil, toNumber } from 'lodash';
 
-import { DtoValidation } from '@/modules/core/decorators';
-import { toBoolean } from '@/modules/core/helpers';
-import { IsDataExist } from '@/modules/database/constraints';
+import { DtoValidation } from '@/common/core/decorators';
+import { toBoolean } from '@/common/core/helpers';
+import { IsDataExist } from '@/common/database/constraints';
 
-import { PaginateWithTrashedDto } from '@/modules/restful/dtos';
+import { PaginateWithTrashedDto } from '@/common/restful/dtos';
 
 import { PostOrderType } from '../constants';
 import { CategoryEntity, TagEntity } from '../entities';

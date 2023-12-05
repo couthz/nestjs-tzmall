@@ -1,4 +1,4 @@
-import { MelliConfig } from '@/modules/meilisearch/types';
+import { MelliConfig } from '@/common/meilisearch/types';
 
 export const meilli = (): MelliConfig => [
     {

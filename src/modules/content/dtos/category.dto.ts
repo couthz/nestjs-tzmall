@@ -14,9 +14,9 @@ import {
 } from 'class-validator';
 import { toNumber } from 'lodash';
 
-import { DtoValidation } from '@/modules/core/decorators';
-import { SelectTrashMode } from '@/modules/database/constants';
-import { IsDataExist, IsTreeUnique, IsTreeUniqueExist } from '@/modules/database/constraints';
+import { DtoValidation } from '@/common/core/decorators';
+import { SelectTrashMode } from '@/common/database/constants';
+import { IsDataExist, IsTreeUnique, IsTreeUniqueExist } from '@/common/database/constraints';
 
 import { CategoryEntity } from '../entities';
 /**

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { omit } from 'lodash';
 
-import { BaseService } from '@/modules/database/base';
+import { BaseService } from '@/common/database/base';
 
 import { CreateTagDto, UpdateTagDto } from '../dtos';
 import { TagEntity } from '../entities';

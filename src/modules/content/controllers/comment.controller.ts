@@ -2,8 +2,8 @@ import { Body, Controller, Delete, Get, Post, Query, SerializeOptions } from '@n
 
 import { ApiTags } from '@nestjs/swagger';
 
-import { Depends } from '@/modules/restful/decorators';
-import { DeleteDto } from '@/modules/restful/dtos';
+import { Depends } from '@/common/restful/decorators';
+import { DeleteDto } from '@/common/restful/dtos';
 
 import { ContentModule } from '../content.module';
 import { CreateCommentDto, QueryCommentDto, QueryCommentTreeDto } from '../dtos';

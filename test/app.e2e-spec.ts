@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 
 import { createOptions } from '@/constants';
-import { Configure } from '@/modules/config/configure';
-import { createBootModule } from '@/modules/core/helpers';
+import { Configure } from '@/common/config/configure';
+import { createBootModule } from '@/common/core/helpers';
 
 describe('AppController (e2e)', () => {
     let app: INestApplication;

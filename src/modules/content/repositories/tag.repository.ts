@@ -1,5 +1,5 @@
-import { BaseRepository } from '@/modules/database/base';
-import { CustomRepository } from '@/modules/database/decorators';
+import { BaseRepository } from '@/common/database/base';
+import { CustomRepository } from '@/common/database/decorators';
 
 import { PostEntity, TagEntity } from '../entities';
 

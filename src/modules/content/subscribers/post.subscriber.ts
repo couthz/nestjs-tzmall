@@ -1,9 +1,9 @@
 import { isNil } from 'lodash';
 import { EventSubscriber } from 'typeorm';
 
-import { Configure } from '@/modules/config/configure';
-import { app } from '@/modules/core/helpers';
-import { BaseSubscriber } from '@/modules/database/base';
+import { Configure } from '@/common/config/configure';
+import { app } from '@/common/core/helpers';
+import { BaseSubscriber } from '@/common/database/base';
 
 import { PostBodyType } from '../constants';
 import { PostEntity } from '../entities';

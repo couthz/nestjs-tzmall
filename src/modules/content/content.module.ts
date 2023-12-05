@@ -1,9 +1,9 @@
 import { Module, ModuleMetadata } from '@nestjs/common';
 
-import { Configure } from '../config/configure';
-import { DatabaseModule } from '../database/database.module';
+import { Configure } from '../../common/config/configure';
+import { DatabaseModule } from '../../common/database/database.module';
 
-import { addEntities, addSubscribers } from '../database/helpers';
+import { addEntities, addSubscribers } from '../../common/database/helpers';
 
 import * as entities from './entities';
 import { defaultContentConfig } from './helpers';

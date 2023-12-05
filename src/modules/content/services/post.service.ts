@@ -4,10 +4,10 @@ import { isArray, isFunction, isNil, omit, pick } from 'lodash';
 
 import { EntityNotFoundError, In, IsNull, Not, SelectQueryBuilder } from 'typeorm';
 
-import { BaseService } from '@/modules/database/base';
-import { SelectTrashMode } from '@/modules/database/constants';
-import { paginate } from '@/modules/database/helpers';
-import { QueryHook } from '@/modules/database/types';
+import { BaseService } from '@/common/database/base';
+import { SelectTrashMode } from '@/common/database/constants';
+import { paginate } from '@/common/database/helpers';
+import { QueryHook } from '@/common/database/types';
 
 import { PostOrderType } from '../constants';
 import { CreatePostDto, QueryPostDto, UpdatePostDto } from '../dtos';

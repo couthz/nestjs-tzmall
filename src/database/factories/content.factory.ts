@@ -1,10 +1,10 @@
 import * as fakerjs from '@faker-js/faker';
 
-import { Configure } from '@/modules/config/configure';
+import { Configure } from '@/common/config/configure';
 
 import { CategoryEntity, CommentEntity, PostEntity, TagEntity } from '@/modules/content/entities';
-import { getTime } from '@/modules/core/helpers';
-import { defineFactory, getFakerLocales } from '@/modules/database/helpers';
+import { getTime } from '@/common/core/helpers';
+import { defineFactory, getFakerLocales } from '@/common/database/helpers';
 
 export type IPostFactoryOptions = Partial<{
     title: string;

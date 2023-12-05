@@ -1,10 +1,10 @@
 import { isNil } from 'lodash';
 import { FindTreeOptions, SelectQueryBuilder } from 'typeorm';
 
-import { BaseTreeRepository } from '@/modules/database/base';
-import { CustomRepository } from '@/modules/database/decorators';
+import { BaseTreeRepository } from '@/common/database/base';
+import { CustomRepository } from '@/common/database/decorators';
 
-import { QueryParams } from '@/modules/database/types';
+import { QueryParams } from '@/common/database/types';
 
 import { CommentEntity } from '../entities';
 

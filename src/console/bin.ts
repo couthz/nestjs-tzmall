@@ -2,6 +2,6 @@
 
 import { createOptions } from '@/constants';
 
-import { buildCli, createApp } from '../modules/core/helpers';
+import { buildCli, createApp } from '../common/core/helpers';
 
 buildCli(createApp(createOptions));

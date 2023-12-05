@@ -13,8 +13,8 @@ import {
 
 import { ApiTags } from '@nestjs/swagger';
 
-import { Depends } from '@/modules/restful/decorators';
-import { DeleteWithTrashDto, RestoreDto } from '@/modules/restful/dtos';
+import { Depends } from '@/common/restful/decorators';
+import { DeleteWithTrashDto, RestoreDto } from '@/common/restful/dtos';
 
 import { ContentModule } from '../content.module';
 import { CreatePostDto, QueryPostDto, UpdatePostDto } from '../dtos';

@@ -1,4 +1,4 @@
-import { ConfigureFactory, ConfigureRegister } from '../config/types';
+import { ConfigureFactory, ConfigureRegister } from '../../common/config/types';
 
 import { ContentConfig } from './types';
 

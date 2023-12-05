@@ -1,9 +1,9 @@
 import { pick, unset } from 'lodash';
 import { FindOptionsUtils, FindTreeOptions } from 'typeorm';
 
-import { BaseTreeRepository } from '@/modules/database/base';
-import { OrderType, TreeChildrenResolve } from '@/modules/database/constants';
-import { CustomRepository } from '@/modules/database/decorators';
+import { BaseTreeRepository } from '@/common/database/base';
+import { OrderType, TreeChildrenResolve } from '@/common/database/constants';
+import { CustomRepository } from '@/common/database/decorators';
 
 import { CategoryEntity } from '../entities';
 

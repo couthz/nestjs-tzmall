@@ -9,11 +9,11 @@ import { DataSource, EntityManager, In } from 'typeorm';
 import { CategoryEntity, CommentEntity, PostEntity, TagEntity } from '@/modules/content/entities';
 import { CategoryRepository, TagRepository } from '@/modules/content/repositories';
 
-import { getRandItemData, getRandListData, panic } from '@/modules/core/helpers';
-import { BaseSeeder } from '@/modules/database/base/seeder';
-import { DbFactory } from '@/modules/database/types';
+import { getRandItemData, getRandListData, panic } from '@/common/core/helpers';
+import { BaseSeeder } from '@/common/database/base/seeder';
+import { DbFactory } from '@/common/database/types';
 
-import { getCustomRepository } from '../../modules/database/helpers';
+import { getCustomRepository } from '../../common/database/helpers';
 import {
     categories,
     CategoryData,

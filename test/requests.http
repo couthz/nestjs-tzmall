@@ -1,0 +1,22 @@
+### list all tag with prod
+GET http://127.0.0.1:3100/api/prod/prodTag/tagProdList
+
+### list posts
+GET http://127.0.0.1:3100/api/content/categories?page=1&limit=10
+
+### ca
+GET http://127.0.0.1:3100/api/prod/prodCategory/categoryProdList 
+
+### list prod by prodId=4
+GET http://127.0.0.1:3100/api/prod/prod/prodDetail/4
+
+### sho
+POST http://127.0.0.1:3100/api/shopcart/shopcartItem/changeItem
+Content-Type: application/json
+
+{
+    "prodId": "4",
+    "skuId": "117",
+    "itemCount": 1,
+    "shopcartItemId": "1"
+}

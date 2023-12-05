@@ -1,6 +1,6 @@
-import { Configure } from '@/modules/config/configure';
-import { ConfigureFactory } from '@/modules/config/types';
-import { ApiConfig } from '@/modules/restful/types';
+import { Configure } from '@/common/config/configure';
+import { ConfigureFactory } from '@/common/config/types';
+import { ApiConfig } from '@/common/restful/types';
 
 import { v1 } from './v1';
 

@@ -4,11 +4,11 @@ import { isNil, omit } from 'lodash';
 
 import { EntityNotFoundError } from 'typeorm';
 
-import { BaseService } from '@/modules/database/base';
-import { SelectTrashMode } from '@/modules/database/constants';
-import { treePaginate } from '@/modules/database/helpers';
+import { BaseService } from '@/common/database/base';
+import { SelectTrashMode } from '@/common/database/constants';
+import { treePaginate } from '@/common/database/helpers';
 
-import { PaginateWithTrashedDto } from '@/modules/restful/dtos';
+import { PaginateWithTrashedDto } from '@/common/restful/dtos';
 
 import { CreateCategoryDto, QueryCategoryTreeDto, UpdateCategoryDto } from '../dtos';
 import { CategoryEntity } from '../entities';

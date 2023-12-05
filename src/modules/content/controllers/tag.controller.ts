@@ -13,9 +13,9 @@ import {
 
 import { ApiTags } from '@nestjs/swagger';
 
-import { Depends } from '@/modules/restful/decorators';
+import { Depends } from '@/common/restful/decorators';
 
-import { DeleteWithTrashDto, PaginateWithTrashedDto, RestoreDto } from '@/modules/restful/dtos';
+import { DeleteWithTrashDto, PaginateWithTrashedDto, RestoreDto } from '@/common/restful/dtos';
 
 import { ContentModule } from '../content.module';
 import { CreateTagDto, UpdateTagDto } from '../dtos';

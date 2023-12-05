@@ -5,9 +5,9 @@ import { isNil, omit, pick } from 'lodash';
 
 import MeiliSearch from 'meilisearch';
 
-import { SelectTrashMode } from '@/modules/database/constants';
+import { SelectTrashMode } from '@/common/database/constants';
 
-import { MeilliService } from '@/modules/meilisearch/meilli.service';
+import { MeilliService } from '@/common/meilisearch/meilli.service';
 
 import { PostEntity } from '../entities';
 import { CategoryRepository, CommentRepository } from '../repositories';

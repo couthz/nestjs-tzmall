@@ -2,7 +2,7 @@ import { PartialType } from '@nestjs/swagger';
 
 import { IsDefined, IsNotEmpty, IsOptional, IsUUID, MaxLength } from 'class-validator';
 
-import { DtoValidation } from '@/modules/core/decorators';
+import { DtoValidation } from '@/common/core/decorators';
 
 /**
  * 标签创建验证

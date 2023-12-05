@@ -3,10 +3,10 @@ import { Transform } from 'class-transformer';
 
 import { IsDefined, IsNotEmpty, IsOptional, IsUUID, MaxLength, ValidateIf } from 'class-validator';
 
-import { DtoValidation } from '@/modules/core/decorators';
-import { IsDataExist } from '@/modules/database/constraints';
+import { DtoValidation } from '@/common/core/decorators';
+import { IsDataExist } from '@/common/database/constraints';
 
-import { PaginateDto } from '@/modules/restful/dtos';
+import { PaginateDto } from '@/common/restful/dtos';
 
 import { PostEntity } from '../entities';
 

@@ -11,21 +11,33 @@ import { isNil } from 'lodash';
 
 import * as configs from './config';
 import { ContentModule } from './modules/content/content.module';
-import { CreateOptions } from './modules/core/types';
-import * as dbCommands from './modules/database/commands';
-import { DatabaseModule } from './modules/database/database.module';
-import { MeilliModule } from './modules/meilisearch/melli.module';
-import { Restful } from './modules/restful/restful';
-import { RestfulModule } from './modules/restful/restful.module';
-import { ApiConfig } from './modules/restful/types';
+import { CreateOptions } from './common/core/types';
+import * as dbCommands from './common/database/commands';
+import { DatabaseModule } from './common/database/database.module';
+import { MeilliModule } from './common/meilisearch/melli.module';
+import { ProdModule } from './modules/api/prod/prod.module';
+import { Restful } from './common/restful/restful';
+import { RestfulModule } from './common/restful/restful.module';
+import { ApiConfig } from './common/restful/types';
+import { ShopcartModule } from './modules/api/shopcart/shopcart.module';
+import { RedisClientModule } from './common/redis/redis-client.module';
+import { OrderModule } from './modules/api/order/order.module';
+import { UserModule } from './modules/api/user/user.module';
 
 export const createOptions: CreateOptions = {
     config: { factories: configs, storage: { enabled: true } },
+    // 函数而非静态模块的原因是因为需要传入configure
     modules: async (configure) => [
         DatabaseModule.forRoot(configure),
         MeilliModule.forRoot(configure),
         RestfulModule.forRoot(configure),
         ContentModule.forRoot(configure),
+        ProdModule.forRoot(configure),
+        ShopcartModule.forRoot(configure),
+        RedisClientModule.forRoot(configure),
+        OrderModule.forRoot(configure),
+        UserModule.forRoot(configure),
+        ShopcartModule.forRoot(configure),
     ],
     commands: () => [...Object.values(dbCommands)],
     globals: {},

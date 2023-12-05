@@ -4,7 +4,7 @@ import { isNil } from 'lodash';
 
 import { EntityNotFoundError, SelectQueryBuilder } from 'typeorm';
 
-import { BaseService } from '@/modules/database/base';
+import { BaseService } from '@/common/database/base';
 
 import { CreateCommentDto, QueryCommentDto, QueryCommentTreeDto } from '../dtos';
 import { CommentEntity } from '../entities';
