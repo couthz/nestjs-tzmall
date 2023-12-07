@@ -5,8 +5,14 @@ import { DatabaseModule } from '../database/database.module';
 
 import { addEntities, addSubscribers } from '../database/helpers';
 
+import { RbacModule } from '../rbac/rbac.module';
+import { UserRepository } from '../user/repositories/user.repository';
+
+import { UserModule } from '../user/user.module';
+
 import * as entities from './entities';
 import { defaultContentConfig } from './helpers';
+import { ContentRbac } from './rbac';
 import * as repositories from './repositories';
 import * as services from './services';
 import { PostService } from './services/post.service';
@@ -21,6 +27,7 @@ export class ContentModule {
         const providers: ModuleMetadata['providers'] = [
             ...Object.values(services),
             ...(await addSubscribers(configure, Object.values(subscribers))),
+            ContentRbac,
             {
                 provide: PostService,
                 inject: [
@@ -35,6 +42,7 @@ export class ContentModule {
                     categoryRepository: repositories.CategoryRepository,
                     categoryService: services.CategoryService,
                     tagRepository: repositories.TagRepository,
+                    userRepository: UserRepository,
                     searchService: services.SearchService,
                 ) {
                     return new PostService(
@@ -42,6 +50,7 @@ export class ContentModule {
                         categoryRepository,
                         categoryService,
                         tagRepository,
+                        userRepository,
                         searchService,
                         config.searchType,
                     );
@@ -53,6 +62,8 @@ export class ContentModule {
         return {
             module: ContentModule,
             imports: [
+                UserModule,
+                RbacModule,
                 addEntities(configure, Object.values(entities)),
                 DatabaseModule.forRepository(Object.values(repositories)),
             ],

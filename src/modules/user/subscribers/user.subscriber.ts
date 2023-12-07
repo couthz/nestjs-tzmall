@@ -4,6 +4,8 @@ import { EventSubscriber, InsertEvent, UpdateEvent } from 'typeorm';
 
 import { BaseSubscriber } from '@/modules/database/base';
 
+import { PermissionEntity, RoleEntity } from '@/modules/rbac/entities';
+
 import { UserEntity } from '../entities/user.entity';
 import { encrypt } from '../helpers';
 
@@ -51,5 +53,20 @@ export class UserSubscriber extends BaseSubscriber<UserEntity> {
         if (this.isUpdated('password', event)) {
             event.entity.password = encrypt(this.configure, event.entity.password);
         }
+    }
+
+    async afterLoad(entity: UserEntity): Promise<void> {
+        let permissions = (entity.permissions ?? []) as PermissionEntity[];
+        for (const role of entity.roles ?? []) {
+            const roleEntity = await RoleEntity.findOneOrFail({
+                relations: ['permissions'],
+                where: { id: role.id },
+            });
+            permissions = [...permissions, ...(roleEntity.permissions ?? [])];
+        }
+        entity.permissions = permissions.reduce((o, n) => {
+            if (o.find(({ name }) => name === n.name)) return o;
+            return [...o, n];
+        }, []);
     }
 }

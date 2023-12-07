@@ -25,6 +25,7 @@
         "test:e2e": "jest --config ./test/jest-e2e.json"
     },
     "dependencies": {
+        "@casl/ability": "^6.5.0",
         "@faker-js/faker": "^8.2.0",
         "@fastify/static": "^6.11.2",
         "@nestjs/common": "^10.2.6",

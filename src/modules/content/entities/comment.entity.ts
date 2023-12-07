@@ -14,6 +14,8 @@ import {
 
 import type { Relation } from 'typeorm';
 
+import { UserEntity } from '@/modules/user/entities';
+
 import { PostEntity } from './post.entity';
 
 @Exclude()
@@ -55,4 +57,12 @@ export class CommentEntity extends BaseEntity {
         onUpdate: 'CASCADE',
     })
     post: Relation<PostEntity>;
+
+    @Expose()
+    @ManyToOne((type) => UserEntity, (user) => user.comments, {
+        nullable: false,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
+    author: Relation<UserEntity>;
 }

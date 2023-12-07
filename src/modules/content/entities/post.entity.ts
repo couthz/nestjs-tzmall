@@ -16,6 +16,8 @@ import {
 
 import type { Relation } from 'typeorm';
 
+import { UserEntity } from '@/modules/user/entities';
+
 import { PostBodyType } from '../constants';
 
 import { CategoryEntity } from './category.entity';
@@ -113,4 +115,12 @@ export class PostEntity extends BaseEntity {
         cascade: true,
     })
     comments: Relation<CommentEntity>[];
+
+    @Expose()
+    @ManyToOne(() => UserEntity, (user) => user.posts, {
+        nullable: false,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
+    author: Relation<UserEntity>;
 }

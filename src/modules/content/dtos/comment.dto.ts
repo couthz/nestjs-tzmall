@@ -8,6 +8,8 @@ import { IsDataExist } from '@/modules/database/constraints';
 
 import { PaginateDto } from '@/modules/restful/dtos';
 
+import { UserEntity } from '@/modules/user/entities';
+
 import { PostEntity } from '../entities';
 
 /**
@@ -15,6 +17,16 @@ import { PostEntity } from '../entities';
  */
 @DtoValidation({ type: 'query' })
 export class QueryCommentDto extends PaginateDto {
+    /**
+     * 评论发布者ID:根据传入评论发布者的ID对评论进行过滤
+     */
+    @IsDataExist(UserEntity, {
+        message: '所属的用户不存在',
+    })
+    @IsUUID(undefined, { message: '用户ID格式错误' })
+    @IsOptional()
+    user?: string;
+
     /**
      * 所属文章ID
      */

@@ -69,6 +69,7 @@ export class Restful extends BaseRestful {
             }
             builder.setVersion(version);
             if (!isNil(metadata)) await SwaggerModule.loadPluginMetadata(metadata);
+
             const document = SwaggerModule.createDocument(container, builder.build(), {
                 include: include.length > 0 ? include : [() => undefined as any],
                 ignoreGlobalPrefix: true,

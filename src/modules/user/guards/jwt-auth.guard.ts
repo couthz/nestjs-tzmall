@@ -5,7 +5,7 @@ import { isNil } from 'lodash';
 import { ExtractJwt } from 'passport-jwt';
 
 import { ALLOW_GUEST } from '../constants';
-import { TokenService } from '../services/token.service';
+import { TokenService } from '../services';
 
 /**
  * 用户JWT认证守卫

@@ -6,9 +6,6 @@ import { Configure } from '../config/configure';
 
 import { ConfigureFactory, ConfigureRegister } from '../config/types';
 
-import { RouteOption, TagOption } from '../restful/types';
-
-import * as controllers from './controllers';
 import { UserConfig } from './types';
 
 /**
@@ -85,22 +82,3 @@ export async function getUserConfig<T>(configure: Configure, key?: string): Prom
     if (isNil(key)) return userConfig as T;
     return get(userConfig, key) as T;
 }
-
-export const createUserApi = () => {
-    const routes: Record<'app', RouteOption[]> = {
-        app: [
-            {
-                name: 'app.user',
-                path: 'user',
-                controllers: Object.values(controllers),
-            },
-        ],
-    };
-    const tags: Record<'app', (string | TagOption)[]> = {
-        app: [
-            { name: '账户操作', description: 'Auth操作' },
-            { name: '用户管理', description: '用户的增删查改操作' },
-        ],
-    };
-    return { routes, tags };
-};

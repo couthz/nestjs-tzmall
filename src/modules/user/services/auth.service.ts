@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { FastifyRequest as Request } from 'fastify';
 import { ExtractJwt } from 'passport-jwt';
 
@@ -8,13 +8,12 @@ import { getTime } from '@/modules/core/helpers';
 
 import { RegisterDto, UpdatePasswordDto } from '../dtos';
 import { UserEntity } from '../entities/user.entity';
-import { decrypt, getUserConfig } from '../helpers';
+import { decrypt, defaultUserConfig } from '../helpers';
 
 import { UserRepository } from '../repositories';
 import { UserConfig } from '../types';
 
 import { TokenService } from './token.service';
-
 import { UserService } from './user.service';
 
 /**
@@ -122,13 +121,20 @@ export class AuthService {
      */
     static jwtModuleFactory(configure: Configure) {
         return JwtModule.registerAsync({
-            useFactory: async () => {
-                const config = await getUserConfig<UserConfig>(configure);
-                return {
+            useFactory: async (): Promise<JwtModuleOptions> => {
+                const config = await configure.get<UserConfig>(
+                    'user',
+                    defaultUserConfig(configure),
+                );
+                const option: JwtModuleOptions = {
                     secret: config.jwt.secret,
-                    ignoreExpiration: !configure.env.isProd(),
-                    signOptions: { expiresIn: `${config.jwt.token_expired}s` },
+                    verifyOptions: {
+                        ignoreExpiration: !configure.env.isProd(),
+                    },
                 };
+                if (configure.env.isProd())
+                    option.signOptions.expiresIn = `${config.jwt.token_expired}s`;
+                return option;
             },
         });
     }

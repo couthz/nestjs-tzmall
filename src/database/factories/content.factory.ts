@@ -5,6 +5,7 @@ import { Configure } from '@/modules/config/configure';
 import { CategoryEntity, CommentEntity, PostEntity, TagEntity } from '@/modules/content/entities';
 import { getTime } from '@/modules/core/helpers';
 import { defineFactory, getFakerLocales } from '@/modules/database/helpers';
+import { UserEntity } from '@/modules/user/entities';
 
 export type IPostFactoryOptions = Partial<{
     title: string;
@@ -14,7 +15,7 @@ export type IPostFactoryOptions = Partial<{
     category: CategoryEntity;
     tags: TagEntity[];
     comments: CommentEntity[];
-}>;
+}> & { author: UserEntity };
 export const ContentFactory = defineFactory(
     PostEntity,
     async (configure: Configure, options: IPostFactoryOptions) => {
@@ -22,7 +23,7 @@ export const ContentFactory = defineFactory(
             locale: await getFakerLocales(configure),
         });
         const post = new PostEntity();
-        const { title, summary, body, category, tags } = options;
+        const { title, summary, body, category, tags, author } = options;
         post.title = title ?? faker.lorem.sentence(Math.floor(Math.random() * 10) + 6);
         if (summary) {
             post.summary = options.summary;
@@ -38,6 +39,7 @@ export const ContentFactory = defineFactory(
         if (tags) {
             post.tags = tags;
         }
+        post.author = author;
         return post;
     },
 );

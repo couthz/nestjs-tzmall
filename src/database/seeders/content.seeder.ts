@@ -4,6 +4,7 @@ import path from 'path';
 
 import { faker } from '@faker-js/faker';
 import { existsSync } from 'fs-extra';
+import { isNil } from 'lodash';
 import { DataSource, EntityManager, In } from 'typeorm';
 
 import { CategoryEntity, CommentEntity, PostEntity, TagEntity } from '@/modules/content/entities';
@@ -12,6 +13,12 @@ import { CategoryRepository, TagRepository } from '@/modules/content/repositorie
 import { getRandItemData, getRandListData, panic } from '@/modules/core/helpers';
 import { BaseSeeder } from '@/modules/database/base/seeder';
 import { DbFactory } from '@/modules/database/types';
+
+import { SystemRoles } from '@/modules/rbac/constants';
+import { RoleEntity } from '@/modules/rbac/entities';
+import { UserEntity } from '@/modules/user/entities';
+
+import { UserRepository } from '@/modules/user/repositories';
 
 import { getCustomRepository } from '../../modules/database/helpers';
 import {
@@ -27,10 +34,14 @@ import { IPostFactoryOptions } from '../factories/content.factory';
 export default class ContentSeeder extends BaseSeeder {
     protected truncates = [PostEntity, CategoryEntity, CommentEntity];
 
+    protected users: UserEntity[] = [];
+
     protected factorier!: DbFactory;
 
     async run(_factorier: DbFactory, _dataSource: DataSource, _em: EntityManager): Promise<any> {
         this.factorier = _factorier;
+        const userRepo = getCustomRepository(this.dataSource, UserRepository);
+        this.users = await userRepo.find({ take: 5 });
         await this.loadCategories(categories);
         await this.loadTags(tags);
         await this.loadPosts(posts);
@@ -42,9 +53,8 @@ export default class ContentSeeder extends BaseSeeder {
             const comment = new CommentEntity();
             comment.body = faker.lorem.paragraph(Math.floor(Math.random() * 18) + 1);
             comment.post = post;
-            if (parent) {
-                comment.parent = parent;
-            }
+            if (parent) comment.parent = parent;
+            comment.author = getRandItemData(this.users);
             comments.push(await this.em.save(comment));
             if (Math.random() >= 0.8) {
                 comment.children = await this.genRandomComments(
@@ -82,6 +92,19 @@ export default class ContentSeeder extends BaseSeeder {
     }
 
     private async loadPosts(data: PostData[]) {
+        const superRole = await this.em.findOneOrFail(RoleEntity, {
+            relations: ['permissions'],
+            where: { name: SystemRoles.SUPER_ADMIN },
+        });
+
+        const superUser = !isNil(superRole)
+            ? await this.em
+                  .createQueryBuilder(UserEntity, 'user')
+                  .leftJoinAndSelect('user.roles', 'roles')
+                  .where('roles.id IN (:...ids)', { ids: [superRole.id] })
+                  .getOne()
+            : null;
+        const author = !isNil(superUser) ? superUser : getRandItemData(this.users);
         const allCategories = await this.em.find(CategoryEntity);
         const allTags = await this.em.find(TagEntity);
         for (const item of data) {
@@ -96,6 +119,7 @@ export default class ContentSeeder extends BaseSeeder {
                 title: item.title,
                 body: fs.readFileSync(filePath, 'utf8'),
                 isPublished: true,
+                author,
             };
             if (item.summary) {
                 options.summary = item.summary;
@@ -113,11 +137,12 @@ export default class ContentSeeder extends BaseSeeder {
             }
             const post = await this.factorier(PostEntity)(options).create();
 
-            await this.genRandomComments(post, Math.floor(Math.random() * 5));
+            await this.genRandomComments(post, Math.floor(Math.random() * 8));
         }
         await this.factorier(PostEntity)<IPostFactoryOptions>({
             tags: getRandListData(allTags),
             category: getRandItemData(allCategories),
-        }).createMany(23);
+            author: getRandItemData(this.users),
+        }).createMany(10);
     }
 }

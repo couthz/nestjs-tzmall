@@ -9,6 +9,10 @@ import { SelectTrashMode } from '@/modules/database/constants';
 import { paginate } from '@/modules/database/helpers';
 import { QueryHook } from '@/modules/database/types';
 
+import { UserEntity } from '@/modules/user/entities';
+
+import { UserRepository } from '@/modules/user/repositories';
+
 import { PostOrderType } from '../constants';
 import { CreatePostDto, QueryPostDto, UpdatePostDto } from '../dtos';
 import { PostEntity } from '../entities';
@@ -36,6 +40,7 @@ export class PostService extends BaseService<PostEntity, PostRepository, FindPar
         protected categoryRepository: CategoryRepository,
         protected categoryService: CategoryService,
         protected tagRepository: TagRepository,
+        protected userRepository: UserRepository,
         protected searchService?: SearchService,
         protected search_type: SearchType = 'against',
     ) {
@@ -76,9 +81,11 @@ export class PostService extends BaseService<PostEntity, PostRepository, FindPar
      * 创建文章
      * @param data
      */
-    async create(data: CreatePostDto) {
+    async create(data: CreatePostDto, author: ClassToPlain<UserEntity>) {
         const createPostDto = {
             ...data,
+            // 文章作者
+            author: await this.userRepository.findOneByOrFail({ id: author.id }),
             // 文章所属的分类
             category: !isNil(data.category)
                 ? await this.categoryRepository.findOneOrFail({ where: { id: data.category } })
@@ -184,7 +191,14 @@ export class PostService extends BaseService<PostEntity, PostRepository, FindPar
         options: FindParams,
         callback?: QueryHook<PostEntity>,
     ) {
-        const { category, tag, orderBy, isPublished, trashed = SelectTrashMode.NONE } = options;
+        const {
+            category,
+            tag,
+            orderBy,
+            author,
+            isPublished,
+            trashed = SelectTrashMode.NONE,
+        } = options;
         // 是否查询回收站
         if (trashed === SelectTrashMode.ALL || trashed === SelectTrashMode.ONLY) {
             qb.withDeleted();
@@ -205,6 +219,7 @@ export class PostService extends BaseService<PostEntity, PostRepository, FindPar
         if (!isNil(options.search)) this.buildSearchQuery(qb, options.search);
         // 查询某个标签关联的文章
         if (tag) qb.where('tags.id = :id', { id: tag });
+        if (author) qb.where('author.id = :id', { id: author });
         if (callback) return callback(qb);
         return qb;
     }

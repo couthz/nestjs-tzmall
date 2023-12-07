@@ -5,12 +5,17 @@ import {
     CreateDateColumn,
     DeleteDateColumn,
     Entity,
+    ManyToMany,
     OneToMany,
     PrimaryColumn,
     UpdateDateColumn,
 } from 'typeorm';
 
 import type { Relation } from 'typeorm';
+
+import { CommentEntity, PostEntity } from '@/modules/content/entities';
+
+import { PermissionEntity, RoleEntity } from '@/modules/rbac/entities';
 
 import { AccessTokenEntity } from './access-token.entity';
 
@@ -59,16 +64,36 @@ export class UserEntity {
     })
     updatedAt: Date;
 
-    @OneToMany(() => AccessTokenEntity, (accessToken) => accessToken.user, {
-        cascade: true,
-    })
-    accessTokens: Relation<AccessTokenEntity>[];
-
-    @Expose()
     @Expose()
     @Type(() => Date)
     @DeleteDateColumn({
         comment: '删除时间',
     })
     deletedAt: Date;
+
+    @Expose()
+    @OneToMany(() => AccessTokenEntity, (accessToken) => accessToken.user, {
+        cascade: true,
+    })
+    accessTokens: Relation<AccessTokenEntity>[];
+
+    @OneToMany(() => PostEntity, (post) => post.author, {
+        cascade: true,
+    })
+    posts: Relation<PostEntity>[];
+
+    @OneToMany(() => CommentEntity, (comment) => comment.author, {
+        cascade: true,
+    })
+    comments: Relation<CommentEntity>[];
+
+    @Expose()
+    @ManyToMany(() => RoleEntity, (role) => role.users, { cascade: true })
+    roles: Relation<RoleEntity>[];
+
+    @Expose()
+    @ManyToMany(() => PermissionEntity, (permisson) => permisson.users, {
+        cascade: true,
+    })
+    permissions: Relation<PermissionEntity>[];
 }
