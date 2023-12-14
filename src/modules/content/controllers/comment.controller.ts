@@ -11,7 +11,9 @@ import { PermissionChecker } from '@/modules/rbac/types';
 import { Depends } from '@/modules/restful/decorators';
 import { DeleteDto } from '@/modules/restful/dtos';
 
-import { Guest } from '@/modules/user/decorators';
+import { Guest, ReqUser } from '@/modules/user/decorators';
+
+import { UserEntity } from '@/modules/user/entities';
 
 import { ContentModule } from '../content.module';
 import { CreateCommentDto, QueryCommentDto, QueryCommentTreeDto } from '../dtos';
@@ -76,8 +78,9 @@ export class CommentController {
     async store(
         @Body()
         data: CreateCommentDto,
+        @ReqUser() author: ClassToPlain<UserEntity>,
     ) {
-        return this.service.create(data);
+        return this.service.create(data, author);
     }
 
     /**

@@ -18,7 +18,10 @@ export class CommentRepository extends BaseTreeRepository<CommentEntity> {
      * 构建基础查询器
      */
     buildBaseQB(qb: SelectQueryBuilder<CommentEntity>): SelectQueryBuilder<CommentEntity> {
-        return super.buildBaseQB(qb).leftJoinAndSelect(`${this.qbName}.post`, 'post');
+        return super
+            .buildBaseQB(qb)
+            .leftJoinAndSelect(`${this.qbName}.author`, 'author')
+            .leftJoinAndSelect(`${this.qbName}.post`, 'post');
     }
 
     async findTrees(

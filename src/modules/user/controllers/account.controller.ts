@@ -11,9 +11,9 @@ import { AuthService, UserService } from '../services';
 import { UserModule } from '../user.module';
 
 @ApiTags('账户操作')
+@ApiBearerAuth()
 @Depends(UserModule)
 @Controller('account')
-@ApiBearerAuth()
 export class AccountController {
     constructor(
         protected authService: AuthService,

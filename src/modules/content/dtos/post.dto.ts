@@ -72,7 +72,7 @@ export class QueryPostDto extends PaginateWithTrashedDto {
     category?: string;
 
     /**
-     * 根据管理标签ID查询
+     * 根据标签ID查询
      */
     @IsDataExist(TagEntity, {
         always: true,
@@ -82,6 +82,9 @@ export class QueryPostDto extends PaginateWithTrashedDto {
     @IsOptional()
     tag?: string;
 
+    /**
+     * 根据文章作者ID查询
+     */
     @IsDataExist(UserEntity, {
         message: '指定的用户不存在',
     })

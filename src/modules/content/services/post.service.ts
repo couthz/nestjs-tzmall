@@ -234,6 +234,12 @@ export class PostService extends BaseService<PostEntity, PostRepository, FindPar
                 })
                 .orWhere('tags.name LIKE :search', {
                     search: `%${search}%`,
+                })
+                .orWhere('author.username LIKE :search', {
+                    search: `%${search}%`,
+                })
+                .orWhere('author.nickname LIKE :search', {
+                    search: `%${search}%`,
                 });
         } else if (this.search_type === 'against') {
             qb.andWhere('MATCH(title) AGAINST (:search IN BOOLEAN MODE)', {
@@ -249,6 +255,12 @@ export class PostService extends BaseService<PostEntity, PostRepository, FindPar
                     search: `${search}*`,
                 })
                 .orWhere('MATCH(tags.name) AGAINST (:search IN BOOLEAN MODE)', {
+                    search: `${search}*`,
+                })
+                .orWhere('MATCH(author.username) AGAINST (:search IN BOOLEAN MODE)', {
+                    search: `${search}*`,
+                })
+                .orWhere('MATCH(author.nickname) AGAINST (:search IN BOOLEAN MODE)', {
                     search: `${search}*`,
                 });
         }
