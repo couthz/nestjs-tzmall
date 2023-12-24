@@ -2,7 +2,7 @@
     // 使用eslint+prettier自动格式化
     "editor.formatOnSave": false,
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
+        "source.fixAll.eslint": "explicit"
     },
     // 导入模块时默认使用相对于项目的路径
     "javascript.preferences.importModuleSpecifier": "project-relative",

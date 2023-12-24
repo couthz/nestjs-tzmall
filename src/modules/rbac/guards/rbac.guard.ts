@@ -1,9 +1,7 @@
 import { createMongoAbility } from '@casl/ability';
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import { ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { ModuleRef, Reflector } from '@nestjs/core';
 import { isNil } from 'lodash';
-
-import { ExtractJwt } from 'passport-jwt';
 
 import { JwtAuthGuard } from '@/modules/user/guards';
 
@@ -30,23 +28,27 @@ export class RbacGuard extends JwtAuthGuard {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const authCheck = await super.canActivate(context);
-        const request = context.switchToHttp().getRequest();
-        const requestToken = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
-        if (!authCheck) return false;
-        if (authCheck && isNil(requestToken)) return true;
+        // const request = context.switchToHttp().getRequest();
+        // const requestToken = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
+        if (!authCheck) throw new ForbiddenException();
+        // if (authCheck && isNil(requestToken)) return true;
         const checkers = this.reflector.getAllAndOverride<PermissionChecker[]>(
             PERMISSION_CHECKERS,
             [context.getHandler(), context.getClass()],
         );
         if (isNil(checkers) || checkers.length <= 0) return true;
-
-        return checkPermissions({
-            resolver: this.resolver,
-            repository: this.userRepository,
-            checkers,
-            moduleRef: this.moduleRef,
-            request: context.switchToHttp().getRequest(),
-        });
+        if (
+            checkPermissions({
+                resolver: this.resolver,
+                repository: this.userRepository,
+                checkers,
+                moduleRef: this.moduleRef,
+                request: context.switchToHttp().getRequest(),
+            })
+        ) {
+            throw new ForbiddenException();
+        }
+        return true;
     }
 }
 
