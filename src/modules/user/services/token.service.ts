@@ -85,7 +85,10 @@ export class TokenService {
             uuid: uuid(),
         };
         const refreshToken = new RefreshTokenEntity();
-        refreshToken.value = jwt.sign(refreshTokenPayload, config.refresh_secret);
+        refreshToken.value = jwt.sign(
+            refreshTokenPayload,
+            this.configure.env.get('USER_REFRESH_TOKEN_SECRET', 'my-refresh-secret'),
+        );
         refreshToken.expired_at = now.add(config.refresh_token_expired, 'second').toDate();
         refreshToken.accessToken = accessToken;
         await refreshToken.save();
@@ -134,8 +137,10 @@ export class TokenService {
      * @param token
      */
     async verifyAccessToken(token: AccessTokenEntity) {
-        const config = await getUserConfig<JwtConfig>(this.configure, 'jwt');
-        const result = jwt.verify(token.value, config.secret);
+        const result = jwt.verify(
+            token.value,
+            this.configure.env.get('USER_TOKEN_SECRET', 'my-access-secret'),
+        );
         if (!result) return false;
         return token.user;
     }

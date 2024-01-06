@@ -28,12 +28,18 @@ import { Guest, ReqUser } from '@/modules/user/decorators';
 import { UserEntity } from '@/modules/user/entities';
 
 import { ContentModule } from '../content.module';
-import { CreatePostDto, QueryFrontendPostDto, QueryOwnerPostDto, UpdatePostDto } from '../dtos';
+import {
+    CreatePostDto,
+    QueryFrontendPostDto,
+    QueryOwnerPostDto,
+    QueryPostDto,
+    UpdatePostDto,
+} from '../dtos';
 import { PostEntity } from '../entities';
 import { PostRepository } from '../repositories';
 import { PostService } from '../services/post.service';
 
-const permissions: Record<'create' | 'owner', PermissionChecker> = {
+const permissions: Record<'create' | 'owner' | 'manage', PermissionChecker> = {
     create: async (ab) => ab.can(PermissionAction.CREATE, PostEntity.name),
     owner: async (ab, ref, request) =>
         checkOwnerPermission(ab, {
@@ -44,6 +50,7 @@ const permissions: Record<'create' | 'owner', PermissionChecker> = {
                     where: { id: In(items) },
                 }),
         }),
+    manage: async (ab) => ab.can(PermissionAction.MANAGE, PostEntity.name),
 };
 
 @ApiTags('文章操作')
@@ -71,13 +78,13 @@ export class PostController {
     }
 
     /**
-     * 分页查询文章列表
+     * 分页查询自己发布的文章列表
      * @param options
      */
-    @Get('owner')
+    @Get('onwer')
     @ApiBearerAuth()
     @SerializeOptions({ groups: ['post-list'] })
-    async listOnwer(
+    async listOwner(
         @Query()
         options: QueryOwnerPostDto,
         @ReqUser() author: ClassToPlain<UserEntity>,
@@ -104,6 +111,10 @@ export class PostController {
         );
     }
 
+    /**
+     * 查询自己发布的文章详情
+     * @param id
+     */
     @Get('owner/:id')
     @ApiBearerAuth()
     @SerializeOptions({ groups: ['post-detail'] })
@@ -132,7 +143,7 @@ export class PostController {
     }
 
     /**
-     * 查询文章详情
+     * 更新自己发布的文章
      * @param data
      */
     @Patch()
@@ -147,7 +158,7 @@ export class PostController {
     }
 
     /**
-     * 批量删除文章
+     * 批量删除自己发布的文章
      * @param data
      */
     @Delete()
@@ -163,7 +174,7 @@ export class PostController {
     }
 
     /**
-     * 批量恢复文章
+     * 批量恢复自己发布的文章
      * @param data
      */
     @Patch('restore')
@@ -171,6 +182,83 @@ export class PostController {
     @SerializeOptions({ groups: ['post-list'] })
     @Permission(permissions.owner)
     async restore(
+        @Body()
+        data: RestoreDto,
+    ) {
+        const { ids } = data;
+        return this.service.restore(ids);
+    }
+
+    /**
+     * 管理员分页查询文章列表
+     * @param options
+     */
+    @Get('manage')
+    @ApiBearerAuth()
+    @SerializeOptions({ groups: ['post-list'] })
+    @Permission(permissions.manage)
+    async manageList(
+        @Query()
+        options: QueryPostDto,
+    ) {
+        return this.service.paginate(options);
+    }
+
+    /**
+     * 管理员查询文章详情
+     * @param id
+     */
+    @Get('manage/:id')
+    @ApiBearerAuth()
+    @SerializeOptions({ groups: ['post-detail'] })
+    @Permission(permissions.manage)
+    async manageDetail(
+        @Param('id', new ParseUUIDPipe())
+        id: string,
+    ) {
+        return this.service.detail(id);
+    }
+
+    /**
+     * 管理员更新文章
+     * @param data
+     */
+    @Patch('manage')
+    @ApiBearerAuth()
+    @SerializeOptions({ groups: ['post-detail'] })
+    @Permission(permissions.manage)
+    async manageUpdate(
+        @Body()
+        data: UpdatePostDto,
+    ) {
+        return this.service.update(data);
+    }
+
+    /**
+     * 管理员批量删除文章
+     * @param data
+     */
+    @Delete('manage')
+    @ApiBearerAuth()
+    @SerializeOptions({ groups: ['post-list'] })
+    @Permission(permissions.manage)
+    async manageDelete(
+        @Body()
+        data: DeleteWithTrashDto,
+    ) {
+        const { ids, trash } = data;
+        return this.service.delete(ids, trash);
+    }
+
+    /**
+     * 管理员批量恢复文章
+     * @param data
+     */
+    @Patch('manage/restore')
+    @ApiBearerAuth()
+    @SerializeOptions({ groups: ['post-list'] })
+    @Permission(permissions.manage)
+    async manageRestore(
         @Body()
         data: RestoreDto,
     ) {

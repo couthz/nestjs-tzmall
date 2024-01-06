@@ -24,6 +24,7 @@ export class UserModule {
             imports: [
                 forwardRef(() => RbacModule),
                 PassportModule,
+                PassportModule,
                 services.AuthService.jwtModuleFactory(configure),
                 addEntities(configure, Object.values(entities)),
                 DatabaseModule.forRepository(Object.values(repositories)),

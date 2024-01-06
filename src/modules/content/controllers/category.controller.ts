@@ -1,15 +1,33 @@
-import { Controller, Get, Param, ParseUUIDPipe, SerializeOptions } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    ParseUUIDPipe,
+    Patch,
+    SerializeOptions,
+} from '@nestjs/common';
 
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+import { PermissionAction } from '@/modules/rbac/constants';
+import { Permission } from '@/modules/rbac/decorators';
+import { PermissionChecker } from '@/modules/rbac/types';
 import { Depends } from '@/modules/restful/decorators';
 
+import { DeleteWithTrashDto } from '@/modules/restful/dtos';
 import { Guest } from '@/modules/user/decorators';
 
 import { ContentModule } from '../content.module';
+import { UpdateCategoryDto } from '../dtos';
+import { CategoryEntity } from '../entities';
 import { CategoryService } from '../services';
 
-@ApiTags('分类信息')
+const permission: PermissionChecker = async (ab) =>
+    ab.can(PermissionAction.MANAGE, CategoryEntity.name);
+
+@ApiTags('分类操作')
 @Depends(ContentModule)
 @Controller('categories')
 export class CategoryController {
@@ -49,5 +67,36 @@ export class CategoryController {
         id: string,
     ) {
         return this.service.detail(id);
+    }
+
+    /**
+     * 更新分类
+     * @param data
+     */
+    @Patch()
+    @ApiBearerAuth()
+    @SerializeOptions({ groups: ['category-detail'] })
+    @Permission(permission)
+    async update(
+        @Body()
+        data: UpdateCategoryDto,
+    ) {
+        return this.service.update(data);
+    }
+
+    /**
+     * 批量删除分类
+     * @param data
+     */
+    @Delete()
+    @ApiBearerAuth()
+    @SerializeOptions({ groups: ['category-list'] })
+    @Permission(permission)
+    async delete(
+        @Body()
+        data: DeleteWithTrashDto,
+    ) {
+        const { ids, trash } = data;
+        return this.service.delete(ids, trash);
     }
 }

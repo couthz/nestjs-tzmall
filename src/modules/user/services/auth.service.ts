@@ -127,7 +127,7 @@ export class AuthService {
                     defaultUserConfig(configure),
                 );
                 const option: JwtModuleOptions = {
-                    secret: config.jwt.secret,
+                    secret: configure.env.get('USER_TOKEN_SECRET', 'my-access-secret'),
                     verifyOptions: {
                         ignoreExpiration: !configure.env.isProd(),
                     },

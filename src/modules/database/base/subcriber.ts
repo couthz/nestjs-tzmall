@@ -1,4 +1,5 @@
 import { Optional } from '@nestjs/common';
+import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { isNil } from 'lodash';
 import {
     EntitySubscriberInterface,
@@ -63,7 +64,7 @@ export abstract class BaseSubscriber<E extends ObjectLiteral>
             : app.container.get(Configure, { strict: false });
     }
 
-    get container() {
+    get container(): NestFastifyApplication {
         return app.container;
     }
 

@@ -15,11 +15,11 @@ import { CreateOptions } from './modules/core/types';
 import * as dbCommands from './modules/database/commands';
 import { DatabaseModule } from './modules/database/database.module';
 import { MeilliModule } from './modules/meilisearch/melli.module';
-import { RbacGuard } from './modules/rbac/guards';
 import { RbacModule } from './modules/rbac/rbac.module';
 import { Restful } from './modules/restful/restful';
 import { RestfulModule } from './modules/restful/restful.module';
 import { ApiConfig } from './modules/restful/types';
+import { JwtAuthGuard } from './modules/user/guards';
 import { UserModule } from './modules/user/user.module';
 
 export const createOptions: CreateOptions = {
@@ -34,7 +34,7 @@ export const createOptions: CreateOptions = {
     ],
     commands: () => [...Object.values(dbCommands)],
     globals: {
-        guard: RbacGuard,
+        guard: JwtAuthGuard,
     },
     builder: async ({ configure, BootModule }) => {
         const container = await NestFactory.create<NestFastifyApplication>(

@@ -16,29 +16,10 @@ export const v1 = async (configure: Configure): Promise<VersionOption> => {
                 controllers: [],
                 doc: {
                     title: '应用接口',
-                    description: '前端APP应用接口',
-                    tags: [...contentApi.tags.app, ...userApi.tags.app, ...rbacApi.tags.app],
+                    description: '客户端及管理端接口',
+                    tags: [...contentApi.tags, ...userApi.tags, ...rbacApi.tags],
                 },
-                children: [...contentApi.routes.app, ...userApi.routes.app, ...rbacApi.routes.app],
-            },
-            {
-                name: 'manage',
-                path: 'manage',
-                controllers: [],
-                doc: {
-                    title: '后台接口',
-                    description: '后台管理接口',
-                    tags: [
-                        ...contentApi.tags.manage,
-                        ...userApi.tags.manage,
-                        ...rbacApi.tags.manage,
-                    ],
-                },
-                children: [
-                    ...contentApi.routes.manage,
-                    ...userApi.routes.manage,
-                    ...rbacApi.routes.manage,
-                ],
+                children: [...contentApi.routes, ...userApi.routes, ...rbacApi.routes],
             },
         ],
     };

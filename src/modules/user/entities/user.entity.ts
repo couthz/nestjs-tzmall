@@ -25,6 +25,7 @@ import { AccessTokenEntity } from './access-token.entity';
 @Exclude()
 @Entity('users')
 export class UserEntity {
+    @Expose()
     @PrimaryColumn({ type: 'varchar', generated: 'uuid', length: 36 })
     id: string;
 

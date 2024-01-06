@@ -1,4 +1,4 @@
-import { PickType, PartialType } from '@nestjs/swagger';
+import { PickType, PartialType, OmitType } from '@nestjs/swagger';
 import { IsDefined, IsEnum, IsOptional, IsUUID } from 'class-validator';
 
 import { DtoValidation } from '@/modules/core/decorators';
@@ -99,3 +99,9 @@ export class QueryUserDto extends PaginateWithTrashedDto {
     @IsEnum(UserOrderType)
     orderBy?: UserOrderType;
 }
+
+/**
+ * 客户端查询用户
+ */
+@DtoValidation({ type: 'query' })
+export class QueryFrontendUserDto extends OmitType(QueryUserDto, ['trashed']) {}

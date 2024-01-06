@@ -10,9 +10,7 @@ export interface UserConfig {
  * JWT配置
  */
 export interface JwtConfig {
-    secret: string;
     token_expired: number;
-    refresh_secret: string;
     refresh_token_expired: number;
 }
 

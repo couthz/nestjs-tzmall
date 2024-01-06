@@ -21,7 +21,7 @@ import { CommentEntity } from '../entities';
 import { CommentRepository } from '../repositories';
 import { CommentService } from '../services';
 
-const permissions: Record<'create' | 'owner', PermissionChecker> = {
+const permissions: Record<'create' | 'owner' | 'manage', PermissionChecker> = {
     create: async (ab) => ab.can(PermissionAction.CREATE, CommentEntity.name),
     owner: async (ab, ref, request) =>
         checkOwnerPermission(ab, {
@@ -32,6 +32,7 @@ const permissions: Record<'create' | 'owner', PermissionChecker> = {
                     where: { id: In(items) },
                 }),
         }),
+    manage: async (ab) => ab.can(PermissionAction.MANAGE, CommentEntity.name),
 };
 @ApiTags('评论操作')
 @Depends(ContentModule)
@@ -92,6 +93,22 @@ export class CommentController {
     @SerializeOptions({ groups: ['comment-list'] })
     @Permission(permissions.owner)
     async delete(
+        @Body()
+        data: DeleteDto,
+    ) {
+        const { ids } = data;
+        return this.service.delete(ids);
+    }
+
+    /**
+     * 管理员批量删除评论
+     * @param data
+     */
+    @Delete('manage')
+    @ApiBearerAuth()
+    @SerializeOptions({ groups: ['comment-list'] })
+    @Permission(permissions.manage)
+    async manageDelete(
         @Body()
         data: DeleteDto,
     ) {

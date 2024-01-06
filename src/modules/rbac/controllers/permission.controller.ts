@@ -5,12 +5,12 @@ import { Depends } from '@/modules/restful/decorators';
 
 import { PaginateWithTrashedDto } from '@/modules/restful/dtos';
 
-import { PermissionAction } from '../../constants';
-import { Permission } from '../../decorators';
-import { PermissionEntity } from '../../entities';
-import { RbacModule } from '../../rbac.module';
-import { PermissionService } from '../../services';
-import { PermissionChecker } from '../../types';
+import { PermissionAction } from '../constants';
+import { Permission } from '../decorators';
+import { PermissionEntity } from '../entities';
+import { RbacModule } from '../rbac.module';
+import { PermissionService } from '../services';
+import { PermissionChecker } from '../types';
 
 const permission: PermissionChecker = async (ab) =>
     ab.can(PermissionAction.MANAGE, PermissionEntity.name);
