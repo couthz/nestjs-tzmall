@@ -18,7 +18,7 @@ import { Permission } from '@/modules/rbac/decorators';
 import { PermissionChecker } from '@/modules/rbac/types';
 import { Depends } from '@/modules/restful/decorators';
 
-import { DeleteWithTrashDto, PaginateWithTrashedDto } from '@/modules/restful/dtos';
+import { DeleteWithTrashDto, PaginateDto } from '@/modules/restful/dtos';
 
 import { Guest } from '@/modules/user/decorators';
 
@@ -44,7 +44,7 @@ export class TagController {
     @Guest()
     async list(
         @Query()
-        options: PaginateWithTrashedDto,
+        options: PaginateDto,
     ) {
         return this.service.paginate(options);
     }

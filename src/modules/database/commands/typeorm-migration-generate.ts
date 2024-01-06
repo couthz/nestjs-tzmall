@@ -131,18 +131,17 @@ export class TypeormMigrationGenerate {
     ): string {
         const migrationName = `${camelCase(upperFirst(name), true)}${timestamp}`;
 
-        return `/* eslint-disable import/no-import-module-exports */
-        import { MigrationInterface, QueryRunner } from "typeorm";
+        return `import typeorm = require('typeorm');;
 
-class ${migrationName} implements MigrationInterface {
+class ${migrationName} implements typeorm.MigrationInterface {
     name = '${migrationName}'
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
+    public async up(queryRunner: typeorm.QueryRunner): Promise<void> {
 ${upSqls.join(`
 `)}
     }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
+    public async down(queryRunner: typeorm.QueryRunner): Promise<void> {
 ${downSqls.join(`
 `)}
     }

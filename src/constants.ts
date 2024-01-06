@@ -19,8 +19,8 @@ import { RbacModule } from './modules/rbac/rbac.module';
 import { Restful } from './modules/restful/restful';
 import { RestfulModule } from './modules/restful/restful.module';
 import { ApiConfig } from './modules/restful/types';
-import { JwtAuthGuard } from './modules/user/guards';
 import { UserModule } from './modules/user/user.module';
+import { RbacGuard } from './modules/rbac/guards';
 
 export const createOptions: CreateOptions = {
     config: { factories: configs, storage: { enabled: true } },
@@ -34,7 +34,7 @@ export const createOptions: CreateOptions = {
     ],
     commands: () => [...Object.values(dbCommands)],
     globals: {
-        guard: JwtAuthGuard,
+        guard: RbacGuard,
     },
     builder: async ({ configure, BootModule }) => {
         const container = await NestFactory.create<NestFastifyApplication>(

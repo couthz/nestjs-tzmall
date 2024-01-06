@@ -37,15 +37,14 @@ export class RbacGuard extends JwtAuthGuard {
             [context.getHandler(), context.getClass()],
         );
         if (isNil(checkers) || checkers.length <= 0) return true;
-        if (
-            checkPermissions({
-                resolver: this.resolver,
-                repository: this.userRepository,
-                checkers,
-                moduleRef: this.moduleRef,
-                request: context.switchToHttp().getRequest(),
-            })
-        ) {
+        const result = await checkPermissions({
+            resolver: this.resolver,
+            repository: this.userRepository,
+            checkers,
+            moduleRef: this.moduleRef,
+            request: context.switchToHttp().getRequest(),
+        });
+        if (!result) {
             throw new ForbiddenException();
         }
         return true;

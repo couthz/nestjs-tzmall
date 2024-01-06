@@ -34,7 +34,7 @@ export class RoleController {
     constructor(protected service: RoleService) {}
 
     /**
-     * 分页列表查询
+     * 角色列表查询
      * @param options
      */
     @Get()
@@ -47,7 +47,7 @@ export class RoleController {
     }
 
     /**
-     * 分页详解查询
+     * 角色详解查询
      * @param id
      */
     @Get(':id')
@@ -60,7 +60,7 @@ export class RoleController {
     }
 
     /**
-     * 新增分类
+     * 新增角色
      * @param data
      */
     @Post()
@@ -75,7 +75,7 @@ export class RoleController {
     }
 
     /**
-     * 更新分类
+     * 更新角色
      * @param data
      */
     @Patch()
@@ -90,7 +90,7 @@ export class RoleController {
     }
 
     /**
-     * 批量删除分类
+     * 批量删除角色
      * @param data
      */
     @Delete()
@@ -106,7 +106,7 @@ export class RoleController {
     }
 
     /**
-     * 批量恢复分类
+     * 批量恢复角色
      * @param data
      */
     @Patch('restore')

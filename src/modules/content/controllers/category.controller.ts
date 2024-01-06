@@ -6,6 +6,7 @@ import {
     Param,
     ParseUUIDPipe,
     Patch,
+    Query,
     SerializeOptions,
 } from '@nestjs/common';
 
@@ -16,7 +17,7 @@ import { Permission } from '@/modules/rbac/decorators';
 import { PermissionChecker } from '@/modules/rbac/types';
 import { Depends } from '@/modules/restful/decorators';
 
-import { DeleteWithTrashDto } from '@/modules/restful/dtos';
+import { DeleteWithTrashDto, PaginateDto } from '@/modules/restful/dtos';
 import { Guest } from '@/modules/user/decorators';
 
 import { ContentModule } from '../content.module';
@@ -51,8 +52,8 @@ export class CategoryController {
     @Get()
     @SerializeOptions({ groups: ['category-list'] })
     @Guest()
-    async list() {
-        return this.service.list();
+    async list(@Query() options: PaginateDto) {
+        return this.service.paginate(options);
     }
 
     /**
