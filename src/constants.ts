@@ -15,12 +15,12 @@ import { CreateOptions } from './modules/core/types';
 import * as dbCommands from './modules/database/commands';
 import { DatabaseModule } from './modules/database/database.module';
 import { MeilliModule } from './modules/meilisearch/melli.module';
+import { RbacGuard } from './modules/rbac/guards';
 import { RbacModule } from './modules/rbac/rbac.module';
 import { Restful } from './modules/restful/restful';
 import { RestfulModule } from './modules/restful/restful.module';
 import { ApiConfig } from './modules/restful/types';
 import { UserModule } from './modules/user/user.module';
-import { RbacGuard } from './modules/rbac/guards';
 
 export const createOptions: CreateOptions = {
     config: { factories: configs, storage: { enabled: true } },
