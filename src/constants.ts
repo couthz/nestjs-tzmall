@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 import { existsSync } from 'fs';
 
 import { join } from 'path';
@@ -52,10 +51,10 @@ export const createOptions: CreateOptions = {
              */
             let metadata: () => Promise<Record<string, any>>;
             if (existsSync(join(__dirname, 'metadata.js'))) {
-                metadata = require(join(__dirname, 'metadata.js')).default;
+                metadata = (await import(join(__dirname, 'metadata.js'))).default;
             }
             if (existsSync(join(__dirname, 'metadata.ts'))) {
-                metadata = require(join(__dirname, 'metadata.ts')).default;
+                metadata = (await import(join(__dirname, 'metadata.ts'))).default;
             }
             await restful.factoryDocs(container, metadata);
         }

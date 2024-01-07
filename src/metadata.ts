@@ -306,12 +306,14 @@ export default async () => {
                                 type: () => Number,
                                 description: '\u5F53\u524D\u9875',
                                 default: 1,
+                                minimum: 1,
                             },
                             limit: {
                                 required: false,
                                 type: () => Number,
                                 description: '\u6BCF\u9875\u6570\u636E\u91CF',
                                 default: 10,
+                                minimum: 1,
                             },
                         },
                     },
@@ -338,17 +340,23 @@ export default async () => {
                                 type: () => String,
                                 description:
                                     '\u767B\u5F55\u51ED\u8BC1:\u53EF\u4EE5\u662F\u7528\u6237\u540D,\u624B\u673A\u53F7,\u90AE\u7BB1\u5730\u5740',
+                                minLength: 4,
+                                maxLength: 30,
                             },
                             username: {
                                 required: true,
                                 type: () => String,
                                 description: '\u7528\u6237\u540D',
+                                minLength: 4,
+                                maxLength: 30,
                             },
                             nickname: {
                                 required: false,
                                 type: () => String,
                                 description:
                                     '\u6635\u79F0:\u4E0D\u8BBE\u7F6E\u5219\u4E3A\u7528\u6237\u540D',
+                                minLength: 3,
+                                maxLength: 20,
                             },
                             phone: {
                                 required: true,
@@ -367,6 +375,8 @@ export default async () => {
                                 type: () => String,
                                 description:
                                     '\u7528\u6237\u5BC6\u7801:\u5BC6\u7801\u5FC5\u987B\u7531\u5C0F\u5199\u5B57\u6BCD,\u5927\u5199\u5B57\u6BCD,\u6570\u5B57\u4EE5\u53CA\u7279\u6B8A\u5B57\u7B26\u7EC4\u6210',
+                                minLength: 8,
+                                maxLength: 50,
                             },
                             plainPassword: {
                                 required: true,
@@ -435,6 +445,8 @@ export default async () => {
                                 type: () => String,
                                 description:
                                     '\u65E7\u5BC6\u7801:\u7528\u6237\u5728\u66F4\u6539\u5BC6\u7801\u65F6\u9700\u8981\u8F93\u5165\u7684\u539F\u5BC6\u7801',
+                                minLength: 8,
+                                maxLength: 50,
                             },
                         },
                     },
@@ -448,12 +460,14 @@ export default async () => {
                                 required: true,
                                 type: () => String,
                                 description: '\u6743\u9650\u540D\u79F0',
+                                maxLength: 100,
                             },
                             label: {
                                 required: false,
                                 type: () => String,
                                 description:
                                     '\u6743\u9650\u6807\u8BC6:\u5982\u679C\u6CA1\u6709\u8BBE\u7F6E\u5219\u5728\u67E5\u8BE2\u540E\u4E3A\u6743\u9650\u540D\u79F0',
+                                maxLength: 100,
                             },
                             permissions: {
                                 required: false,
@@ -500,6 +514,7 @@ export default async () => {
                                 required: true,
                                 type: () => String,
                                 description: '\u5206\u7C7B\u540D',
+                                maxLength: 25,
                             },
                             parent: {
                                 required: false,
@@ -511,6 +526,7 @@ export default async () => {
                                 type: () => Number,
                                 description: '\u81EA\u5B9A\u4E49\u6392\u5E8F',
                                 default: 0,
+                                minimum: 0,
                             },
                         },
                         UpdateCategoryDto: {
@@ -530,6 +546,7 @@ export default async () => {
                                 required: false,
                                 type: () => String,
                                 description: '\u5168\u6587\u641C\u7D22',
+                                maxLength: 100,
                             },
                             isPublished: {
                                 required: false,
@@ -565,6 +582,7 @@ export default async () => {
                                 required: true,
                                 type: () => String,
                                 description: '\u6587\u7AE0\u6807\u9898',
+                                maxLength: 255,
                             },
                             body: {
                                 required: true,
@@ -575,6 +593,7 @@ export default async () => {
                                 required: false,
                                 type: () => String,
                                 description: '\u6587\u7AE0\u63CF\u8FF0',
+                                maxLength: 500,
                             },
                             publishedAt: {
                                 required: false,
@@ -585,12 +604,14 @@ export default async () => {
                                 required: false,
                                 type: () => [String],
                                 description: 'SEO\u5173\u952E\u5B57',
+                                maxLength: 20,
                             },
                             customOrder: {
                                 required: true,
                                 type: () => Object,
                                 description: '\u81EA\u5B9A\u4E49\u6392\u5E8F',
                                 default: 0,
+                                minimum: 0,
                             },
                             category: {
                                 required: true,
@@ -618,6 +639,7 @@ export default async () => {
                                 description:
                                     '\u7528\u6237\u4FA7\u6392\u5E8F:\u6587\u7AE0\u5728\u7528\u6237\u7684\u6587\u7AE0\u7BA1\u7406\u800C\u975E\u540E\u53F0\u4E2D,\u5217\u8868\u7684\u6392\u5E8F\u89C4\u5219',
                                 default: 0,
+                                minimum: 0,
                             },
                         },
                         UpdatePostDto: {
@@ -634,6 +656,7 @@ export default async () => {
                                 description:
                                     '\u7528\u6237\u4FA7\u6392\u5E8F:\u6587\u7AE0\u5728\u7528\u6237\u7684\u6587\u7AE0\u7BA1\u7406\u800C\u975E\u540E\u53F0\u4E2D,\u5217\u8868\u7684\u6392\u5E8F\u89C4\u5219',
                                 default: 0,
+                                minimum: 0,
                             },
                         },
                     },
@@ -660,6 +683,7 @@ export default async () => {
                                 required: true,
                                 type: () => String,
                                 description: '\u8BC4\u8BBA\u5185\u5BB9',
+                                maxLength: 1000,
                             },
                             post: {
                                 required: true,
@@ -682,11 +706,13 @@ export default async () => {
                                 required: true,
                                 type: () => String,
                                 description: '\u6807\u7B7E\u540D\u79F0',
+                                maxLength: 255,
                             },
                             description: {
                                 required: false,
                                 type: () => String,
                                 description: '\u6807\u7B7E\u63CF\u8FF0',
+                                maxLength: 500,
                             },
                         },
                         UpdateTagDto: {
@@ -702,25 +728,253 @@ export default async () => {
             controllers: [
                 [
                     import('./modules/content/controllers/category.controller'),
-                    { CategoryController: {} },
+                    {
+                        CategoryController: {
+                            tree: {
+                                summary: '\u67E5\u8BE2\u5206\u7C7B\u6811',
+                                type: [
+                                    t['./modules/content/entities/category.entity'].CategoryEntity,
+                                ],
+                            },
+                            list: { summary: '\u5206\u9875\u67E5\u8BE2\u5206\u7C7B\u5217\u8868' },
+                            detail: {
+                                summary: '\u5206\u9875\u8BE6\u89E3\u67E5\u8BE2',
+                                type: t['./modules/content/entities/category.entity']
+                                    .CategoryEntity,
+                            },
+                            update: {
+                                summary: '\u66F4\u65B0\u5206\u7C7B',
+                                type: t['./modules/content/entities/category.entity']
+                                    .CategoryEntity,
+                            },
+                            delete: {
+                                summary: '\u6279\u91CF\u5220\u9664\u5206\u7C7B',
+                                type: [
+                                    t['./modules/content/entities/category.entity'].CategoryEntity,
+                                ],
+                            },
+                        },
+                    },
                 ],
-                [import('./modules/content/controllers/tag.controller'), { TagController: {} }],
-                [import('./modules/content/controllers/post.controller'), { PostController: {} }],
+                [
+                    import('./modules/content/controllers/tag.controller'),
+                    {
+                        TagController: {
+                            list: { summary: '\u5206\u9875\u67E5\u8BE2\u6807\u7B7E\u5217\u8868' },
+                            detail: {
+                                summary: '\u67E5\u8BE2\u6807\u7B7E\u8BE6\u60C5',
+                                type: t['./modules/content/entities/tag.entity'].TagEntity,
+                            },
+                            store: {
+                                summary: '\u6DFB\u52A0\u65B0\u6807\u7B7E',
+                                type: t['./modules/content/entities/tag.entity'].TagEntity,
+                            },
+                            update: {
+                                summary: '\u66F4\u65B0\u6807\u7B7E',
+                                type: t['./modules/content/entities/tag.entity'].TagEntity,
+                            },
+                            delete: {
+                                summary: '\u6279\u91CF\u5220\u9664\u6807\u7B7E',
+                                type: [t['./modules/content/entities/tag.entity'].TagEntity],
+                            },
+                        },
+                    },
+                ],
+                [
+                    import('./modules/content/controllers/post.controller'),
+                    {
+                        PostController: {
+                            list: {
+                                summary: '\u5206\u9875\u67E5\u8BE2\u6587\u7AE0\u5217\u8868',
+                                type: Object,
+                            },
+                            listOwner: {
+                                summary:
+                                    '\u5206\u9875\u67E5\u8BE2\u81EA\u5DF1\u53D1\u5E03\u7684\u6587\u7AE0\u5217\u8868',
+                                type: Object,
+                            },
+                            detail: {
+                                summary: '\u67E5\u8BE2\u6587\u7AE0\u8BE6\u60C5',
+                                type: t['./modules/content/entities/post.entity'].PostEntity,
+                            },
+                            detailOwner: {
+                                summary:
+                                    '\u67E5\u8BE2\u81EA\u5DF1\u53D1\u5E03\u7684\u6587\u7AE0\u8BE6\u60C5',
+                                type: t['./modules/content/entities/post.entity'].PostEntity,
+                            },
+                            store: {
+                                summary: '\u65B0\u589E\u6587\u7AE0',
+                                type: t['./modules/content/entities/post.entity'].PostEntity,
+                            },
+                            update: {
+                                summary: '\u66F4\u65B0\u81EA\u5DF1\u53D1\u5E03\u7684\u6587\u7AE0',
+                                type: t['./modules/content/entities/post.entity'].PostEntity,
+                            },
+                            delete: {
+                                summary:
+                                    '\u6279\u91CF\u5220\u9664\u81EA\u5DF1\u53D1\u5E03\u7684\u6587\u7AE0',
+                                type: [t['./modules/content/entities/post.entity'].PostEntity],
+                            },
+                            restore: {
+                                summary:
+                                    '\u6279\u91CF\u6062\u590D\u81EA\u5DF1\u53D1\u5E03\u7684\u6587\u7AE0',
+                                type: [t['./modules/content/entities/post.entity'].PostEntity],
+                            },
+                            manageList: {
+                                summary:
+                                    '\u7BA1\u7406\u5458\u5206\u9875\u67E5\u8BE2\u6587\u7AE0\u5217\u8868',
+                                type: Object,
+                            },
+                            manageDetail: {
+                                summary: '\u7BA1\u7406\u5458\u67E5\u8BE2\u6587\u7AE0\u8BE6\u60C5',
+                                type: t['./modules/content/entities/post.entity'].PostEntity,
+                            },
+                            manageUpdate: {
+                                summary: '\u7BA1\u7406\u5458\u66F4\u65B0\u6587\u7AE0',
+                                type: t['./modules/content/entities/post.entity'].PostEntity,
+                            },
+                            manageDelete: {
+                                summary: '\u7BA1\u7406\u5458\u6279\u91CF\u5220\u9664\u6587\u7AE0',
+                                type: [t['./modules/content/entities/post.entity'].PostEntity],
+                            },
+                            manageRestore: {
+                                summary: '\u7BA1\u7406\u5458\u6279\u91CF\u6062\u590D\u6587\u7AE0',
+                                type: [t['./modules/content/entities/post.entity'].PostEntity],
+                            },
+                        },
+                    },
+                ],
                 [
                     import('./modules/content/controllers/comment.controller'),
-                    { CommentController: {} },
+                    {
+                        CommentController: {
+                            tree: {
+                                summary: '\u67E5\u8BE2\u8BC4\u8BBA\u6811',
+                                type: [
+                                    t['./modules/content/entities/comment.entity'].CommentEntity,
+                                ],
+                            },
+                            list: { summary: '\u5206\u9875\u67E5\u8BE2\u8BC4\u8BBA\u5217\u8868' },
+                            store: {
+                                summary: '\u65B0\u589E\u8BC4\u8BBA',
+                                type: t['./modules/content/entities/comment.entity'].CommentEntity,
+                            },
+                            delete: {
+                                summary: '\u6279\u91CF\u5220\u9664\u8BC4\u8BBA',
+                                type: [
+                                    t['./modules/content/entities/comment.entity'].CommentEntity,
+                                ],
+                            },
+                            manageDelete: {
+                                summary: '\u7BA1\u7406\u5458\u6279\u91CF\u5220\u9664\u8BC4\u8BBA',
+                                type: [
+                                    t['./modules/content/entities/comment.entity'].CommentEntity,
+                                ],
+                            },
+                        },
+                    },
                 ],
                 [
                     import('./modules/rbac/controllers/permission.controller'),
-                    { PermissionController: {} },
+                    {
+                        PermissionController: {
+                            list: { summary: '\u5206\u9875\u5217\u8868\u67E5\u8BE2' },
+                            detail: { summary: '\u5206\u9875\u8BE6\u89E3\u67E5\u8BE2' },
+                        },
+                    },
                 ],
-                [import('./modules/rbac/controllers/role.controller'), { RoleController: {} }],
-                [import('./modules/user/controllers/auth.controller'), { AuthController: {} }],
+                [
+                    import('./modules/rbac/controllers/role.controller'),
+                    {
+                        RoleController: {
+                            list: { summary: '\u89D2\u8272\u5217\u8868\u67E5\u8BE2' },
+                            detail: {
+                                summary: '\u89D2\u8272\u8BE6\u89E3\u67E5\u8BE2',
+                                type: t['./modules/rbac/entities/role.entity'].RoleEntity,
+                            },
+                            store: {
+                                summary: '\u65B0\u589E\u89D2\u8272',
+                                type: t['./modules/rbac/entities/role.entity'].RoleEntity,
+                            },
+                            update: {
+                                summary: '\u66F4\u65B0\u89D2\u8272',
+                                type: t['./modules/rbac/entities/role.entity'].RoleEntity,
+                            },
+                            delete: {
+                                summary: '\u6279\u91CF\u5220\u9664\u89D2\u8272',
+                                type: [t['./modules/rbac/entities/role.entity'].RoleEntity],
+                            },
+                            restore: {
+                                summary: '\u6279\u91CF\u6062\u590D\u89D2\u8272',
+                                type: [t['./modules/rbac/entities/role.entity'].RoleEntity],
+                            },
+                        },
+                    },
+                ],
+                [
+                    import('./modules/user/controllers/auth.controller'),
+                    {
+                        AuthController: {
+                            register: {
+                                summary:
+                                    '\u4F7F\u7528\u7528\u6237\u540D\u5BC6\u7801\u6CE8\u518C\u7528\u6237',
+                                type: t['./modules/user/entities/user.entity'].UserEntity,
+                            },
+                            login: {
+                                summary:
+                                    '\u7528\u6237\u901A\u8FC7\u51ED\u8BC1(\u53EF\u4EE5\u662F\u7528\u6237\u540D,\u90AE\u7BB1,\u624B\u673A\u53F7\u7B49)+\u5BC6\u7801\u767B\u5F55',
+                            },
+                            logout: { summary: '\u6CE8\u9500\u767B\u5F55' },
+                        },
+                    },
+                ],
                 [
                     import('./modules/user/controllers/account.controller'),
-                    { AccountController: {} },
+                    {
+                        AccountController: {
+                            profile: {
+                                summary:
+                                    '\u83B7\u53D6\u7528\u6237\u4E2A\u4EBA\u4FE1\u606F\n\u67E5\u8BE2\u8D26\u6237\u4FE1\u606F(\u53EA\u6709\u7528\u6237\u81EA\u5DF1\u624D\u80FD\u67E5\u8BE2)',
+                                type: t['./modules/user/entities/user.entity'].UserEntity,
+                            },
+                            update: {
+                                summary: '\u66F4\u6539\u8D26\u6237\u4FE1\u606F',
+                                type: t['./modules/user/entities/user.entity'].UserEntity,
+                            },
+                            resetPassword: {
+                                summary: '\u66F4\u6539\u5BC6\u7801',
+                                type: t['./modules/user/entities/user.entity'].UserEntity,
+                            },
+                        },
+                    },
                 ],
-                [import('./modules/user/controllers/user.controller'), { UserController: {} }],
+                [
+                    import('./modules/user/controllers/user.controller'),
+                    {
+                        UserController: {
+                            list: {
+                                summary: '\u67E5\u8BE2\u7528\u6237\u5217\u8868',
+                                type: [t['./modules/user/entities/user.entity'].UserEntity],
+                            },
+                            detail: {
+                                summary: '\u83B7\u53D6\u7528\u6237\u4FE1\u606F',
+                                type: t['./modules/user/entities/user.entity'].UserEntity,
+                            },
+                            manageList: {
+                                summary: '\u7BA1\u7406\u5458\u67E5\u8BE2\u7528\u6237\u5217\u8868',
+                                type: [t['./modules/user/entities/user.entity'].UserEntity],
+                            },
+                            delete: {
+                                summary: '\u6279\u91CF\u5220\u9664\u7528\u6237',
+                                type: [t['./modules/user/entities/user.entity'].UserEntity],
+                            },
+                            restore: {
+                                summary: '\u6279\u91CF\u6062\u590D\u7528\u6237',
+                                type: [t['./modules/user/entities/user.entity'].UserEntity],
+                            },
+                        },
+                    },
+                ],
             ],
         },
     };
