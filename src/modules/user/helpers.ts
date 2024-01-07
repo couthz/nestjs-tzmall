@@ -15,16 +15,7 @@ import { UserConfig } from './types';
  */
 export const encrypt = async (configure: Configure, password: string) => {
     const hash = (await getUserConfig<number>(configure, 'hash')) || 10;
-    try {
-        // @ts-ignore
-        // eslint-disable-next-line @typescript-eslint/return-await
-        return await Bun.password.hash(password, {
-            algorithm: 'bcrypt',
-            cost: hash,
-        });
-    } catch (error) {
-        return bcrypt.hashSync(password, hash);
-    }
+    return bcrypt.hashSync(password, hash);
 };
 
 /**
@@ -33,13 +24,7 @@ export const encrypt = async (configure: Configure, password: string) => {
  * @param hashed
  */
 export const decrypt = (password: string, hashed: string) => {
-    try {
-        // @ts-ignore
-        // eslint-disable-next-line @typescript-eslint/return-await
-        return Bun.password.verifySync(password, hashed);
-    } catch (error) {
-        return bcrypt.compareSync(password, hashed);
-    }
+    return bcrypt.compareSync(password, hashed);
 };
 
 /**

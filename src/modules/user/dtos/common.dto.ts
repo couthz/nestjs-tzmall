@@ -28,14 +28,21 @@ export class UserCommonDto {
     @IsUnique(
         { entity: UserEntity },
         {
-            groups: [UserValidateGroups.CREATE],
+            groups: [UserValidateGroups.USER_CREATE, UserValidateGroups.AUTH_REGISTER],
             message: '该用户名已被注册',
         },
     )
     @IsUniqueExist(
         { entity: UserEntity, ignore: 'id' },
         {
-            groups: [UserValidateGroups.UPDATE],
+            groups: [UserValidateGroups.USER_UPDATE],
+            message: '该用户名已被注册',
+        },
+    )
+    @IsUniqueExist(
+        { entity: UserEntity, ignore: 'id', ignoreKey: 'userId' },
+        {
+            groups: [UserValidateGroups.ACCOUNT_UPDATE],
             message: '该用户名已被注册',
         },
     )
@@ -43,7 +50,7 @@ export class UserCommonDto {
         always: true,
         message: '用户名长度必须为$constraint1到$constraint2',
     })
-    @IsOptional({ groups: [UserValidateGroups.UPDATE] })
+    @IsOptional({ groups: [UserValidateGroups.USER_UPDATE, UserValidateGroups.ACCOUNT_UPDATE] })
     username: string;
 
     /**
@@ -63,7 +70,11 @@ export class UserCommonDto {
         { entity: UserEntity },
         {
             message: '手机号已被注册',
-            groups: [UserValidateGroups.CREATE],
+            groups: [
+                UserValidateGroups.USER_CREATE,
+                UserValidateGroups.USER_UPDATE,
+                UserValidateGroups.AUTH_REGISTER,
+            ],
         },
     )
     @IsMatchPhone(
@@ -74,7 +85,13 @@ export class UserCommonDto {
             always: true,
         },
     )
-    @IsOptional({ groups: [UserValidateGroups.CREATE, UserValidateGroups.UPDATE] })
+    @IsOptional({
+        groups: [
+            UserValidateGroups.USER_CREATE,
+            UserValidateGroups.USER_UPDATE,
+            UserValidateGroups.AUTH_REGISTER,
+        ],
+    })
     phone: string;
 
     /**
@@ -84,14 +101,24 @@ export class UserCommonDto {
         { entity: UserEntity },
         {
             message: '邮箱已被注册',
-            groups: [UserValidateGroups.CREATE],
+            groups: [
+                UserValidateGroups.USER_CREATE,
+                UserValidateGroups.USER_UPDATE,
+                UserValidateGroups.AUTH_REGISTER,
+            ],
         },
     )
     @IsEmail(undefined, {
         message: '邮箱地址格式错误',
         always: true,
     })
-    @IsOptional({ groups: [UserValidateGroups.CREATE, UserValidateGroups.UPDATE] })
+    @IsOptional({
+        groups: [
+            UserValidateGroups.USER_CREATE,
+            UserValidateGroups.USER_UPDATE,
+            UserValidateGroups.AUTH_REGISTER,
+        ],
+    })
     email: string;
 
     /**
@@ -105,13 +132,17 @@ export class UserCommonDto {
         message: '密码长度不得少于$constraint1',
         always: true,
     })
-    @IsOptional({ groups: [UserValidateGroups.UPDATE] })
+    @IsMatch('oldPassword', true, {
+        message: '新密码与旧密码不得相同',
+        groups: [UserValidateGroups.ACCOUNT_CHANGE_PASSWORD],
+    })
+    @IsOptional({ groups: [UserValidateGroups.USER_UPDATE] })
     password: string;
 
     /**
      * 确认密码:必须与用户密码输入相同的字符串
      */
-    @IsMatch('password', { message: '两次输入密码不同', always: true })
+    @IsMatch('password', false, { message: '两次输入密码不同', always: true })
     @IsNotEmpty({ message: '请再次输入密码以确认', always: true })
     plainPassword: string;
 }

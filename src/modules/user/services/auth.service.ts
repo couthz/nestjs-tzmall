@@ -109,11 +109,10 @@ export class AuthService {
             select: ['password'],
             where: { id: user.id },
         });
-        if (decrypt(item.password, oldPassword))
+        if (!decrypt(oldPassword, item.password))
             throw new ForbiddenException('old password not matched');
-        item.password = password;
-        await this.userRepository.save(item);
-        return this.userService.findOneByCondition({ id: item.id });
+        await this.userRepository.save({ id: user.id, password }, { reload: true });
+        return this.userService.detail(user.id);
     }
 
     /**

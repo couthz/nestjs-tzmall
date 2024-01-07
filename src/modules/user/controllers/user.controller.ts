@@ -38,13 +38,12 @@ export class UserController {
      */
     @Get()
     @SerializeOptions({ groups: ['user-list'] })
-    @Permission(permission)
     @Guest()
     async list(
         @Query()
         options: QueryFrontendUserDto,
     ) {
-        return this.service.list(options);
+        return this.service.paginate(options);
     }
 
     /**
@@ -72,7 +71,7 @@ export class UserController {
         @Query()
         options: QueryUserDto,
     ) {
-        return this.service.list(options);
+        return this.service.paginate(options);
     }
 
     /**

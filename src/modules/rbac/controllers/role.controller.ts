@@ -16,6 +16,8 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Depends } from '@/modules/restful/decorators';
 import { DeleteWithTrashDto, PaginateWithTrashedDto, RestoreDto } from '@/modules/restful/dtos';
 
+import { Guest } from '@/modules/user/decorators';
+
 import { PermissionAction } from '../constants';
 import { Permission } from '../decorators';
 import { CreateRoleDto, UpdateRoleDto } from '../dtos';
@@ -39,6 +41,7 @@ export class RoleController {
      */
     @Get()
     @SerializeOptions({ groups: ['role-list'] })
+    @Guest()
     async list(
         @Query()
         options: PaginateWithTrashedDto,
@@ -52,6 +55,7 @@ export class RoleController {
      */
     @Get(':id')
     @SerializeOptions({ groups: ['role-detail'] })
+    @Guest()
     async detail(
         @Param('id', new ParseUUIDPipe())
         id: string,

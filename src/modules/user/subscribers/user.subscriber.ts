@@ -51,7 +51,7 @@ export class UserSubscriber extends BaseSubscriber<UserEntity> {
      */
     async beforeUpdate(event: UpdateEvent<UserEntity>) {
         if (this.isUpdated('password', event)) {
-            event.entity.password = encrypt(this.configure, event.entity.password);
+            event.entity.password = await encrypt(this.configure, event.entity.password);
         }
     }
 

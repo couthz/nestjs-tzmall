@@ -7,10 +7,9 @@
     "license": "UNLICENSED",
     "scripts": {
         "cli": "bun --bun src/console/bin.ts",
-        "dev": "cross-env NODE_ENV=development pnpm cli start -w",
-        "prod": "cross-env NODE_ENV=production pnpm cli start -w -p",
-        "prodjs": "cross-env NODE_ENV=production pnpm cli start -w -p --no-ts",
-        "reload": "cross-env NODE_ENV=production pnpm cli start -r",
+        "cli-prod": "node dist/console.main.js",
+        "dev": "pnpm start:dev",
+        "prod": "pnpm start:prod",
         "build": "cross-env NODE_ENV=production pnpm cli build",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
         "start": "cross-env NODE_ENV=development nest start",

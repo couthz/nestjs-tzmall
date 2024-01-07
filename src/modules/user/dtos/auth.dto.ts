@@ -14,7 +14,7 @@ export class CredentialDto extends PickType(UserCommonDto, ['credential', 'passw
 /**
  * 普通方式注册用户
  */
-@DtoValidation({ groups: [UserValidateGroups.REGISTER] })
+@DtoValidation({ groups: [UserValidateGroups.AUTH_REGISTER] })
 export class RegisterDto extends PickType(UserCommonDto, [
     'username',
     'nickname',

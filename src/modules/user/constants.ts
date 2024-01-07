@@ -10,9 +10,11 @@ export enum UserOrderType {
  * 用户请求DTO验证组
  */
 export enum UserValidateGroups {
-    CREATE = 'user-create',
-    UPDATE = 'user-update',
-    REGISTER = 'user-register',
+    USER_CREATE = 'user-create',
+    USER_UPDATE = 'user-update',
+    AUTH_REGISTER = 'user-register',
+    ACCOUNT_UPDATE = 'account-update',
+    ACCOUNT_CHANGE_PASSWORD = 'account-change-password',
 }
 
 export const ALLOW_GUEST = 'allowGuest';

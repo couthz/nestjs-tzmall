@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, SerializeOptions } from '@nestjs/common';
+import { Body, Controller, Get, Patch, SerializeOptions, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { pick } from 'lodash';
 
@@ -8,6 +8,7 @@ import { ReqUser } from '../decorators';
 import { UpdateAccountDto, UpdatePasswordDto } from '../dtos';
 import { UserEntity } from '../entities';
 import { AuthService, UserService } from '../services';
+import { UserIdInterceptor } from '../user.interceptor';
 import { UserModule } from '../user.module';
 
 @ApiTags('账户操作')
@@ -42,6 +43,7 @@ export class AccountController {
     @SerializeOptions({
         groups: ['user-detail'],
     })
+    @UseInterceptors(UserIdInterceptor)
     async update(
         @ReqUser() user: ClassToPlain<UserEntity>,
         @Body()
@@ -62,7 +64,7 @@ export class AccountController {
     async resetPassword(
         @ReqUser() user: ClassToPlain<UserEntity>,
         @Body() data: UpdatePasswordDto,
-    ): Promise<UserEntity> {
+    ) {
         return this.authService.updatePassword(user, data);
     }
 }

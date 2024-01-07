@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { isNil } from 'lodash';
 
 import { In, IsNull, Not } from 'typeorm';
 
@@ -30,6 +31,7 @@ import { UserEntity } from '@/modules/user/entities';
 import { ContentModule } from '../content.module';
 import {
     CreatePostDto,
+    CreateUserPostDto,
     QueryFrontendPostDto,
     QueryOwnerPostDto,
     QueryPostDto,
@@ -136,7 +138,7 @@ export class PostController {
     @Permission(permissions.create)
     async store(
         @Body()
-        data: CreatePostDto,
+        data: CreateUserPostDto,
         @ReqUser() author: ClassToPlain<UserEntity>,
     ) {
         return this.service.create(data, author);
@@ -217,6 +219,24 @@ export class PostController {
         id: string,
     ) {
         return this.service.detail(id);
+    }
+
+    /**
+     * 管理员新增文章
+     * @param data
+     */
+    @Post('manage')
+    @ApiBearerAuth()
+    @SerializeOptions({ groups: ['post-detail'] })
+    @Permission(permissions.manage)
+    async storeManage(
+        @Body()
+        { author, ...data }: CreatePostDto,
+        @ReqUser() user: ClassToPlain<UserEntity>,
+    ) {
+        return this.service.create(data, {
+            id: isNil(author) ? user.id : author,
+        } as ClassToPlain<UserEntity>);
     }
 
     /**

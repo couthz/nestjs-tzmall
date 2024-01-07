@@ -6,6 +6,7 @@ import {
     Param,
     ParseUUIDPipe,
     Patch,
+    Post,
     Query,
     SerializeOptions,
 } from '@nestjs/common';
@@ -21,7 +22,7 @@ import { DeleteWithTrashDto, PaginateDto } from '@/modules/restful/dtos';
 import { Guest } from '@/modules/user/decorators';
 
 import { ContentModule } from '../content.module';
-import { UpdateCategoryDto } from '../dtos';
+import { CreateCategoryDto, UpdateCategoryDto } from '../dtos';
 import { CategoryEntity } from '../entities';
 import { CategoryService } from '../services';
 
@@ -68,6 +69,18 @@ export class CategoryController {
         id: string,
     ) {
         return this.service.detail(id);
+    }
+
+    /**
+     * 新增分类
+     * @param data
+     */
+    @Post()
+    @ApiBearerAuth()
+    @SerializeOptions({ groups: ['category-detail'] })
+    @Permission(permission)
+    async store(@Body() data: CreateCategoryDto) {
+        return this.service.create(data);
     }
 
     /**

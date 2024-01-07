@@ -15,6 +15,7 @@ import * as repositories from './repositories';
 import * as services from './services';
 import * as strategies from './strategies';
 import * as subscribers from './subscribers';
+import { UserIdInterceptor } from './user.interceptor';
 
 @Module({})
 export class UserModule {
@@ -30,6 +31,7 @@ export class UserModule {
                 DatabaseModule.forRepository(Object.values(repositories)),
             ],
             providers: [
+                UserIdInterceptor,
                 ...Object.values(services),
                 ...(await addSubscribers(configure, Object.values(subscribers))),
                 ...Object.values(strategies),

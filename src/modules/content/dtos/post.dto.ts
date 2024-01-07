@@ -153,7 +153,7 @@ export class CreatePostDto {
     @Min(0, { always: true, message: '排序值必须大于0' })
     @IsNumber(undefined, { always: true })
     @IsOptional({ always: true })
-    customOrder = 0;
+    customOrder?: number = 0;
 
     /**
      * 所属分类ID
@@ -219,14 +219,14 @@ export class CreateUserPostDto extends OmitType(CreatePostDto, ['author', 'custo
     @Min(0, { always: true, message: '排序值必须大于0' })
     @IsNumber(undefined, { always: true })
     @IsOptional({ always: true })
-    userOrder = 0;
+    userOrder?: number = 0;
 }
 
 /**
  * 文章更新验证
  */
 @DtoValidation({ groups: ['update'] })
-export class UpdatePostDto extends PartialType(OmitType(CreatePostDto, ['author'])) {
+export class UpdatePostDto extends PartialType(CreatePostDto) {
     /**
      * 待更新ID
      */
@@ -239,7 +239,7 @@ export class UpdatePostDto extends PartialType(OmitType(CreatePostDto, ['author'
  * 用户文章更新验证
  */
 @DtoValidation({ groups: ['update'] })
-export class UpdateUserPostDto extends OmitType(UpdatePostDto, ['customOrder']) {
+export class UpdateUserPostDto extends OmitType(UpdatePostDto, ['author', 'customOrder']) {
     /**
      * 用户侧排序:文章在用户的文章管理而非后台中,列表的排序规则
      */
@@ -247,5 +247,5 @@ export class UpdateUserPostDto extends OmitType(UpdatePostDto, ['customOrder']) 
     @Min(0, { always: true, message: '排序值必须大于0' })
     @IsNumber(undefined, { always: true })
     @IsOptional({ always: true })
-    userOrder = 0;
+    userOrder?: number = 0;
 }

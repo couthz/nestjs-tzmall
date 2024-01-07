@@ -59,7 +59,10 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
      * @param data
      */
     async update({ roles, permissions, ...data }: UpdateUserDto) {
-        const user = await this.userRepository.save(data, { reload: true });
+        const updated = await this.userRepository.save(data, { reload: true });
+        const user = await this.detail(updated.id);
+        if ((isNil(roles) || roles.length < 0) && (isNil(permissions) || permissions.length < 0))
+            return user;
         if (isArray(roles) && roles.length > 0) {
             await this.userRepository
                 .createQueryBuilder('user')
@@ -84,7 +87,7 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
      * @param callback
      */
     async findOneByCredential(credential: string, callback?: QueryHook<UserEntity>) {
-        let query = this.userRepository.buildBaseQuery();
+        let query = this.userRepository.buildBaseQB();
         if (callback) {
             query = await callback(query);
         }
@@ -101,7 +104,7 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
      * @param callback
      */
     async findOneByCondition(condition: { [key: string]: any }, callback?: QueryHook<UserEntity>) {
-        let query = this.userRepository.buildBaseQuery();
+        let query = this.userRepository.buildBaseQB();
         if (callback) {
             query = await callback(query);
         }
@@ -132,7 +135,7 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
                 permissions: [options.permission],
             });
         }
-        if (orderBy) qb.orderBy(`user.${orderBy}`, 'ASC');
+        if (isNil(orderBy)) qb.orderBy(`user.${orderBy}`, 'ASC');
         return qb;
     }
 
@@ -147,7 +150,6 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
             roleNames.length <= 0 ||
             (!roleNames.includes(SystemRoles.USER) && !roleNames.includes(SystemRoles.SUPER_ADMIN));
         const isSuperAdmin = roleNames.includes(SystemRoles.SUPER_ADMIN);
-
         // 为普通用户添加custom-user角色
         // 为超级管理员添加super-admin角色
         if (noRoles) {

@@ -16,6 +16,10 @@ type Condition = {
      */
     ignore?: string;
     /**
+     * 忽略的字段在DTO类中的属性，默认与ignore相同，用于处理忽略字段在DTO中取值时的属性名与数据库中的字段名不同的特殊情况
+     */
+    ignoreKey?: string;
+    /**
      * 如果没有指定字段则使用当前验证的属性作为查询依据
      */
     property?: string;
@@ -42,7 +46,9 @@ export class UniqueExistContraint implements ValidatorConstraintInterface {
               }) as unknown as Required<Condition>;
         if (!condition.entity) return false;
         // 在传入的dto数据中获取需要忽略的字段的值
-        const ignoreValue = (args.object as any)[condition.ignore];
+        const ignoreValue = (args.object as any)[
+            isNil(condition.ignoreKey) ? condition.ignore : condition.ignoreKey
+        ];
         // 如果忽略字段不存在则验证失败
         if (ignoreValue === undefined) return false;
         // 通过entity获取repository

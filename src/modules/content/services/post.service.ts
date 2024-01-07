@@ -108,6 +108,11 @@ export class PostService extends BaseService<PostEntity, PostRepository, FindPar
      */
     async update(data: UpdatePostDto) {
         const post = await this.detail(data.id);
+        if (!isNil(data.author)) {
+            const author = await this.userRepository.findOneByOrFail({ id: data.author });
+            post.author = author;
+            await this.repository.save(author, { reload: true });
+        }
         if (data.category !== undefined) {
             // 更新分类
             const category = isNil(data.category)
@@ -124,7 +129,7 @@ export class PostService extends BaseService<PostEntity, PostRepository, FindPar
                 .of(post)
                 .addAndRemove(data.tags, post.tags ?? []);
         }
-        await this.repository.update(data.id, omit(data, ['id', 'tags', 'category']));
+        await this.repository.update(data.id, omit(data, ['id', 'tags', 'category', 'author']));
         const result = await this.detail(data.id);
         if (!isNil(this.searchService)) await this.searchService.update([post]);
         return result;

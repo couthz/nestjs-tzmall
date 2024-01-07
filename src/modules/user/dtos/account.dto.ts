@@ -12,12 +12,18 @@ import { UserCommonDto } from './common.dto';
 /**
  * 更新用户信息
  */
-@DtoValidation({ groups: [UserValidateGroups.UPDATE] })
+@DtoValidation({
+    groups: [UserValidateGroups.ACCOUNT_UPDATE],
+    whitelist: false,
+})
 export class UpdateAccountDto extends PickType(UserCommonDto, ['username', 'nickname']) {}
 
 /**
  * 更改用户密码
  */
+@DtoValidation({
+    groups: [UserValidateGroups.ACCOUNT_CHANGE_PASSWORD],
+})
 export class UpdatePasswordDto extends PickType(UserCommonDto, ['password', 'plainPassword']) {
     /**
      * 旧密码:用户在更改密码时需要输入的原密码
