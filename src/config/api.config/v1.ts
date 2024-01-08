@@ -19,7 +19,15 @@ export const v1 = async (configure: Configure): Promise<VersionOption> => {
                     description: '客户端及管理端接口',
                     tags: [...contentApi.tags, ...userApi.tags, ...rbacApi.tags],
                 },
-                children: [...contentApi.routes, ...userApi.routes, ...rbacApi.routes],
+                children: [
+                    {
+                        name: 'user',
+                        path: 'user',
+                        children: userApi.routes,
+                        controllers: [],
+                    },
+                ],
+                // children: [...contentApi.routes, ...userApi.routes, ...rbacApi.routes],
             },
         ],
     };

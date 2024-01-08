@@ -1,12 +1,23 @@
-import { Body, Controller, Get, Patch, SerializeOptions, UseInterceptors } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Patch,
+    Post,
+    Request,
+    SerializeOptions,
+    UseGuards,
+    UseInterceptors,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { pick } from 'lodash';
 
 import { Depends } from '@/modules/restful/decorators';
 
-import { ReqUser } from '../decorators';
-import { UpdateAccountDto, UpdatePasswordDto } from '../dtos';
+import { Guest, ReqUser } from '../decorators';
+import { CredentialDto, RegisterDto, UpdateAccountDto, UpdatePasswordDto } from '../dtos';
 import { UserEntity } from '../entities';
+import { LocalAuthGuard } from '../guards';
 import { AuthService, UserService } from '../services';
 import { UserIdInterceptor } from '../user.interceptor';
 import { UserModule } from '../user.module';
@@ -22,11 +33,45 @@ export class AccountController {
     ) {}
 
     /**
-     * 获取用户个人信息
-     * 查询账户信息(只有用户自己才能查询)
+     * 使用用户名密码注册用户
+     * @param data
+     */
+    @Post('register')
+    @Guest()
+    async register(
+        @Body()
+        data: RegisterDto,
+    ) {
+        return this.authService.register(data);
+    }
+
+    /**
+     * 用户登录[凭证(可以是用户名,邮箱,手机号等)+密码登录]
+     * @param user
+     */
+    @Post('login')
+    @Guest()
+    @UseGuards(LocalAuthGuard)
+    async login(@ReqUser() user: ClassToPlain<UserEntity>, @Body() _data: CredentialDto) {
+        return { token: await this.authService.createToken(user.id) };
+    }
+
+    /**
+     * 注销登录
+     * @param req
+     */
+    @Post('logout')
+    @ApiBearerAuth()
+    async logout(@Request() req: any) {
+        return this.authService.logout(req);
+    }
+
+    /**
+     * 获取账户信息[只有用户自己才能查询]
      * @param user
      */
     @Get('profile')
+    @ApiBearerAuth()
     @SerializeOptions({
         groups: ['user-detail'],
     })
@@ -40,6 +85,7 @@ export class AccountController {
      * @param data
      */
     @Patch()
+    @ApiBearerAuth()
     @SerializeOptions({
         groups: ['user-detail'],
     })
@@ -53,11 +99,12 @@ export class AccountController {
     }
 
     /**
-     * 更改密码
+     * 修改密码[必须知道原密码]
      * @param user
      * @param data
      */
     @Patch('reset-passowrd')
+    @ApiBearerAuth()
     @SerializeOptions({
         groups: ['user-detail'],
     })

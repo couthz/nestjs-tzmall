@@ -10,8 +10,6 @@ import { TagRepository } from '../repositories';
 
 @Injectable()
 export class TagService extends BaseService<TagEntity, TagRepository> {
-    protected enableTrash = true;
-
     constructor(protected repository: TagRepository) {
         super(repository);
     }

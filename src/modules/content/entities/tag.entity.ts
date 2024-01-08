@@ -1,5 +1,5 @@
-import { Exclude, Expose, Type } from 'class-transformer';
-import { Column, DeleteDateColumn, Entity, Index, ManyToMany, PrimaryColumn } from 'typeorm';
+import { Exclude, Expose } from 'class-transformer';
+import { Column, Entity, Index, ManyToMany, PrimaryColumn } from 'typeorm';
 
 import type { Relation } from 'typeorm';
 
@@ -20,13 +20,6 @@ export class TagEntity {
     @Expose()
     @Column({ comment: '标签描述', nullable: true })
     description?: string;
-
-    @Expose()
-    @Type(() => Date)
-    @DeleteDateColumn({
-        comment: '删除时间',
-    })
-    deletedAt: Date;
 
     /**
      * 通过queryBuilder生成的文章数量(虚拟字段)

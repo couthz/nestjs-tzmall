@@ -104,4 +104,4 @@ export class QueryUserDto extends PaginateWithTrashedDto {
  * 客户端查询用户
  */
 @DtoValidation({ type: 'query' })
-export class QueryFrontendUserDto extends OmitType(QueryUserDto, ['trashed']) {}
+export class AppQueryUserDto extends OmitType(QueryUserDto, ['trashed']) {}

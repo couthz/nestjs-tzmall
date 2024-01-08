@@ -16,8 +16,6 @@ import { CategoryRepository } from '../repositories';
 
 @Injectable()
 export class CategoryService extends BaseService<CategoryEntity, CategoryRepository> {
-    protected enableTrash = true;
-
     constructor(protected repository: CategoryRepository) {
         super(repository);
     }
