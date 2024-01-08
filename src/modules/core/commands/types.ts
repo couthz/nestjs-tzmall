@@ -1,12 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { SpawnOptions as NodeSpawnOptions } from 'child_process';
 
-import { Configuration as NestCLIConfig } from '@nestjs/cli/lib/configuration';
-import type { SpawnOptions as BunSpawnOptions } from 'bun';
 import { StartOptions } from 'pm2';
-import ts from 'typescript';
 
-export type PM2Arguments = {
+export type Pm2Arguments = {
     /**
      * 使用直接运行TS文件的入口文件,默认为main.ts
      * 如果是运行js文件,则通过nest-cli.json的entryFile指定
@@ -24,26 +20,13 @@ export type PM2Arguments = {
     restart?: boolean;
 
     /**
-     * PM2配置
+     * 是否执行额外命令
      */
-    pm2?: Omit<StartOptions, 'name' | 'cwd' | 'script' | 'args' | 'interpreter' | 'watch'>;
+    args?: string[];
 };
 
 /**
- * CLI运行配置
+ * PM2配置
  */
-export interface CLIConfig {
-    options: {
-        ts: ts.CompilerOptions;
-        nest: NestCLIConfig;
-    };
-    paths: Record<'cwd' | 'dist' | 'src' | 'js' | 'ts' | 'bun' | 'nest', string>;
-    subprocess: {
-        bun: BunSpawnOptions.OptionsObject;
-        node: NodeSpawnOptions;
-    };
-}
-
-export type Pm2Option = Pick<PM2Arguments, 'watch'> & {
-    command: string;
-};
+export type Pm2Option = Pick<Pm2Arguments, 'watch' | 'args'> &
+    Omit<StartOptions, 'name' | 'cwd' | 'script' | 'args' | 'interpreter' | 'watch'>;

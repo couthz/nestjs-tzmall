@@ -34,7 +34,7 @@
         "paths": {
             "@/*": ["./src/*"]
         },
-        "types": ["bun-types", "@types/jest"]
+        "types": ["@types/jest"]
     },
     "include": ["src", "test", "typings/**/*.d.ts", "**.js"]
 }
