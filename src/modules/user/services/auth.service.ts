@@ -132,7 +132,7 @@ export class AuthService {
                     },
                 };
                 if (configure.env.isProd())
-                    option.signOptions.expiresIn = `${config.jwt.token_expired}s`;
+                    option.signOptions = { expiresIn: `${config.jwt.token_expired}s` };
                 return option;
             },
         });
