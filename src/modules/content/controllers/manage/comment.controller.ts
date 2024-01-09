@@ -15,7 +15,7 @@ import { CommentService } from '../../services';
 
 const permission: PermissionChecker = async (ab) =>
     ab.can(PermissionAction.MANAGE, CommentEntity.name);
-@ApiTags('评论操作')
+@ApiTags('评论管理')
 @ApiBearerAuth()
 @Depends(ContentModule)
 @Controller('comments')

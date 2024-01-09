@@ -32,7 +32,7 @@ import { PostService } from '../../services/post.service';
 const permission: PermissionChecker = async (ab) =>
     ab.can(PermissionAction.MANAGE, PostEntity.name);
 
-@ApiTags('文章操作')
+@ApiTags('文章管理')
 @ApiBearerAuth()
 @Depends(ContentModule)
 @Controller('posts')

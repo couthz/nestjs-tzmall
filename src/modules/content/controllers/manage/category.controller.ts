@@ -28,7 +28,7 @@ import { CategoryService } from '../../services';
 const permission: PermissionChecker = async (ab) =>
     ab.can(PermissionAction.MANAGE, CategoryEntity.name);
 
-@ApiTags('分类操作')
+@ApiTags('分类管理')
 @ApiBearerAuth()
 @Depends(ContentModule)
 @Controller('categories')

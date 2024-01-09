@@ -10,7 +10,7 @@ import { Guest } from '@/modules/user/decorators';
 import { ContentModule } from '../content.module';
 import { CategoryService } from '../services';
 
-@ApiTags('分类操作')
+@ApiTags('分类信息')
 @Depends(ContentModule)
 @Controller('categories')
 export class CategoryController {

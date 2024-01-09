@@ -27,7 +27,7 @@ import { TagService } from '../../services';
 
 const permission: PermissionChecker = async (ab) => ab.can(PermissionAction.MANAGE, TagEntity.name);
 
-@ApiTags('标签操作')
+@ApiTags('标签管理')
 @ApiBearerAuth()
 @Depends(ContentModule)
 @Controller('tags')

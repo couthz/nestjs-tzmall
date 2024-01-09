@@ -11,7 +11,7 @@ import { Guest } from '@/modules/user/decorators';
 import { ContentModule } from '../content.module';
 import { TagService } from '../services';
 
-@ApiTags('标签操作')
+@ApiTags('标签信息')
 @Depends(ContentModule)
 @Controller('tags')
 export class TagController {
