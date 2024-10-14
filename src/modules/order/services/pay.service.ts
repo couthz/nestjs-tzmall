@@ -1,10 +1,10 @@
 import { OrderService } from './order.service';
 import { OrderPaymentRepository } from './../repositories/order-payment.repository';
 import { Inject, Injectable } from '@nestjs/common';
-import WxPay from 'wechatpay-node-v3';
+// import WxPay from 'wechatpay-node-v3';
 
-import { WECHAT_PAY_MANAGER } from 'nest-wechatpay-node-v3';
-import { Ijsapi } from 'wechatpay-node-v3/dist/lib/interface';
+// import { WECHAT_PAY_MANAGER } from 'nest-wechatpay-node-v3';
+// import { Ijsapi } from 'wechatpay-node-v3/dist/lib/interface';
 import { OrderPayDTO } from '../dtos/order-pay.dto';
 import { UserRepository } from '@/modules/user/repositories';
 import { PayOrderInfoDto } from '../dtos/pay-order-info.dto';
@@ -22,7 +22,7 @@ export class PayService {
         protected orderRepository: OrderRepository,
         protected orderPaymentRepository: OrderPaymentRepository,
         protected orderService: OrderService,
-        @Inject(WECHAT_PAY_MANAGER) private wxPay: WxPay,
+        // @Inject(WECHAT_PAY_MANAGER) private wxPay: WxPay,
     ) {}
 
     async normalPay(orderPayDTO: OrderPayDTO, userId: string): Promise<PayOrderInfoDto> {
