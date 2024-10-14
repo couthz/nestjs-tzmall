@@ -5,6 +5,7 @@
 /dist
 /node_modules
 /metadata.ts
+/__data
 
 # Logs
 logs
