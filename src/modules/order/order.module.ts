@@ -24,16 +24,16 @@ export class OrderModule {
                 ShopcartModule.forRoot(configure),
                 addEntities(configure, Object.values(entities)),
                 DatabaseModule.forRepository(Object.values(repositories)),
-                WeChatPayModule.registerAsync({
-                    useFactory: async () => {
-                      return {
-                        appid: process.env.MINIPROGRAM_APP_ID,
-                        mchid: process.env.MCH_ID,
-                        publicKey: fs.readFileSync('/Users/zhengheci/Desktop/3r/course-project/copy/nestjs/public/cert/apiclient_cert.pem'), // 公钥
-                        privateKey: fs.readFileSync('/Users/zhengheci/Desktop/3r/course-project/copy/nestjs/public/cert/apiclient_key.pem'), // 秘钥
-                      };
-                    },
-                  }),
+                // WeChatPayModule.registerAsync({
+                //     useFactory: async () => {
+                //       return {
+                //         appid: process.env.MINIPROGRAM_APP_ID,
+                //         mchid: process.env.MCH_ID,
+                //         publicKey: fs.readFileSync('/Users/zhengheci/Desktop/3r/course-project/copy/nestjs/public/cert/apiclient_cert.pem'), // 公钥
+                //         privateKey: fs.readFileSync('/Users/zhengheci/Desktop/3r/course-project/copy/nestjs/public/cert/apiclient_key.pem'), // 秘钥
+                //       };
+                //     },
+                //   }),
             ],
             providers,
             exports: [
