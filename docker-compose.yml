@@ -2,7 +2,7 @@ version: '3'
 
 services:
   mysql:
-    image: mysql:latest
+    image: mysql:8.2.0-1.el8
     container_name: nest-mysql
     restart: always
     env_file:
