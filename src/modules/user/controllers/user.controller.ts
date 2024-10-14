@@ -1,50 +1,22 @@
-import { Controller, Get, Param, ParseUUIDPipe, Query, SerializeOptions } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+//模仿auth.controller.ts，创建user.controller.ts
+import { ApiTags } from "@nestjs/swagger";
+import { UserModule } from "../user.module";
+import { Depends } from "@/modules/restful/decorators";
+import { Body, Controller, Post } from "@nestjs/common";
 
-import { IsNull, Not } from 'typeorm';
-
-import { SelectTrashMode } from '@/modules/database/constants';
-import { Depends } from '@/modules/restful/decorators';
-
-import { Guest } from '../decorators';
-import { AppQueryUserDto } from '../dtos';
-import { UserService } from '../services';
-import { UserModule } from '../user.module';
-
-@ApiTags('用户查询')
+import { UserService } from "../services/user.service";
+import { UpdateAvatarNickNameDTO } from "../dtos/update-avatar-nickName.dto";
+import { CurrentUserId } from "@/modules/core/decorators/current-user-id.decorator";
+@ApiTags('用户管理')
 @Depends(UserModule)
-@Controller('users')
-export class UserQueryController {
+@Controller('user')
+export class UserController {
+
     constructor(protected service: UserService) {}
 
-    /**
-     * 查询用户列表
-     */
-    @Get()
-    @SerializeOptions({ groups: ['user-list'] })
-    @Guest()
-    async list(
-        @Query()
-        options: AppQueryUserDto,
-    ) {
-        return this.service.paginate({
-            ...options,
-            isPublished: true,
-            trashed: SelectTrashMode.NONE,
-        });
+    @Post('updateAvatarAndNickName')
+    async updateAvatarAndNickName(@Body() updateAvatarNickNameDTO:UpdateAvatarNickNameDTO, @CurrentUserId() userId: string) {
+        return await this.service.updateAvatarAndNickName(updateAvatarNickNameDTO, userId);
     }
 
-    /**
-     * 查询用户信息
-     * @param id
-     */
-    @Get(':id')
-    @Guest()
-    @SerializeOptions({ groups: ['user-detail'] })
-    async detail(
-        @Param('id', new ParseUUIDPipe())
-        id: string,
-    ) {
-        return this.service.detail(id, async (qb) => qb.andWhere({ deletedAt: Not(IsNull()) }));
-    }
 }

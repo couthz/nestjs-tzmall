@@ -1,10 +1,10 @@
 import { RouteOption, TagOption } from '../restful/types';
 
 import * as controllers from './controllers';
-import * as manageControllers from './controllers/manage';
+// import * as manageControllers from './controllers/manage';
 
 export const createUserApi = () => {
-    const routes: Record<'app' | 'manage', RouteOption[]> = {
+    const routes: Record<'app' | 'admin', RouteOption[]> = {
         app: [
             {
                 name: 'app.user',
@@ -12,20 +12,20 @@ export const createUserApi = () => {
                 controllers: Object.values(controllers),
             },
         ],
-        manage: [
-            {
-                name: 'manage.user',
-                path: 'user',
-                controllers: Object.values(manageControllers),
-            },
+        admin: [
+            // {
+            //     name: 'admin.rbac',
+            //     path: 'rbac',
+            //     controllers: Object.values(manageControllers),
+            // },
         ],
     };
-    const tags: Record<'app' | 'manage', Array<string | TagOption>> = {
-        app: [
-            { name: '用户查询', description: '查看用户列表和用户信息' },
-            { name: '账户操作', description: '注册、登录、找回密码、查看修改账户信息、修改密码等' },
+    const tags: Record<'app' | 'admin', Array<string | TagOption>> = {
+        app: [{ name: '用户认证管理', description: '用户认证相关操作' }],
+        admin: [
+            // { name: '角色管理', description: '管理角色信息' },
+            // { name: '权限信息', description: '查看权限信息' },
         ],
-        manage: [{ name: '用户管理', description: '管理用户信息' }],
     };
     return { routes, tags };
 };

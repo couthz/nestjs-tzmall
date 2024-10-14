@@ -1,141 +1,70 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
-import { FastifyRequest as Request } from 'fastify';
-import { ExtractJwt } from 'passport-jwt';
+import { WxAuthenticationDTO } from '../dtos/wx-authentication.dto';
+import { Inject, Injectable, Logger } from "@nestjs/common";
+import { UserRepository } from "../repositories/user.repository";
+import { HttpService } from '@nestjs/axios';
+import { WxSessionDTO } from '../dtos/wx-session.dto';
+import { catchError, lastValueFrom } from 'rxjs';
+import { ApiException } from '@/modules/core/exceptions/api.exception';
+import { TokenInfoDTO } from '../dtos/token-info.dto';
+import { JwtService } from '@nestjs/jwt';
 
-import { Configure } from '@/modules/config/configure';
-import { getTime } from '@/modules/core/helpers';
-
-import { RegisterDto, UpdatePasswordDto } from '../dtos';
-import { UserEntity } from '../entities/user.entity';
-import { decrypt, defaultUserConfig } from '../helpers';
-
-import { UserRepository } from '../repositories';
-import { UserConfig } from '../types';
-
-import { TokenService } from './token.service';
-import { UserService } from './user.service';
-
-/**
- * 账户与认证服务
- */
 @Injectable()
-export class AuthService {
+export class AuthService{
     constructor(
-        protected configure: Configure,
-        protected userService: UserService,
-        protected tokenService: TokenService,
         protected userRepository: UserRepository,
-    ) {}
+        private readonly httpService: HttpService,
+        private jwtService: JwtService,
+        @Inject('userLogger') private readonly logger: Logger) {} 
 
-    /**
-     * 用户登录验证
-     * @param credential
-     * @param password
-     */
-    async validateUser(credential: string, password: string) {
-        const user = await this.userService.findOneByCredential(credential, async (query) =>
-            query.addSelect('user.password'),
-        );
-        if (user && decrypt(password, user.password)) {
-            return user;
-        }
-        return false;
+    async wxLogin(wxAuthenticationDTO: WxAuthenticationDTO):Promise<TokenInfoDTO> {
+        // const code = wxAuthenticationDTO.code;
+        // const appId = process.env.MINIPROGRAM_APP_ID;
+        // const secret = process.env.MINIPROGRAM_SECRET;
+
+        // const wxSessionDTO = await this.code2Session(appId,secret,code);
+        // if (wxSessionDTO.openid == null) {
+        //     this.logger.error("获取openid出现错误")
+        //     throw new ApiException("获取openid出现错误，请稍后重试");
+        // }
+        // const openId = wxSessionDTO.openid;
+        // //TODO 暂时只有openid，后续需要获取unionId
+        // const user = await this.userRepository.getOrCreateUserByOpenId(openId);
+        //根据user生成token 返回给前端
+
+        //demo模拟登录
+        const user = await this.userRepository.getOrCreateUserByOpenId("demo");
+
+        const payload = { sub: user.userId, openId: "demo" };
+
+        let tokenInfo = new TokenInfoDTO();
+        tokenInfo.accessToken = await this.jwtService.sign(payload);
+        tokenInfo.expiresIn = Number(process.env.JWT_EXPIRES_IN) ;
+        tokenInfo.nickName = user.nickName;
+        tokenInfo.avatarUrl = user.avatarUrl;
+        tokenInfo.userMobile = user.userMobile
+
+        return tokenInfo;
     }
 
-    /**
-     * 登录用户,并生成新的token和refreshToken
-     * @param user
-     */
-    async login(user: UserEntity) {
-        const now = await getTime(this.configure);
-        const { accessToken } = await this.tokenService.generateAccessToken(user, now);
-        return accessToken.value;
-    }
-
-    /**
-     * 注销登录
-     * @param req
-     */
-    async logout(req: Request) {
-        const accessToken = ExtractJwt.fromAuthHeaderAsBearerToken()(req as any);
-        if (accessToken) {
-            await this.tokenService.removeAccessToken(accessToken);
-        }
-
-        return {
-            msg: 'logout_success',
+    async code2Session(appId: string, secret: string, code: string): Promise<WxSessionDTO> {
+        const apiUrl = 'https://api.weixin.qq.com/sns/jscode2session';
+    
+        // 使用 params 属性传递参数
+        const params = {
+          appid: appId,
+          secret: secret,
+          js_code: code,
+          grant_type: "authorization_code"
         };
-    }
 
-    /**
-     * 登录用户后生成新的token和refreshToken
-     * @param id
-     */
-    async createToken(id: string) {
-        const now = await getTime(this.configure);
-        let user: UserEntity;
-        try {
-            user = await this.userService.detail(id);
-        } catch (error) {
-            throw new ForbiddenException();
-        }
-        const { accessToken } = await this.tokenService.generateAccessToken(user, now);
-        return accessToken.value;
-    }
+        const { data } = await lastValueFrom(this.httpService.get<WxSessionDTO>(apiUrl, { params: params }).pipe(
+            catchError((err) => {
+                this.logger.error(err);
 
-    /**
-     * 使用用户名密码注册用户
-     * @param data
-     */
-    async register(data: RegisterDto) {
-        const { username, nickname, password } = data;
-        const user = await this.userService.create({
-            username,
-            nickname,
-            password,
-            actived: true,
-        } as any);
-        return this.userService.findOneByCondition({ id: user.id });
-    }
+                throw new ApiException(err.response.data.errmsg);
+            }
+        )));
+        return data;
+      }
 
-    /**
-     * 更新用户密码
-     * @param user
-     * @param param1
-     */
-    async updatePassword(user: UserEntity, { password, oldPassword }: UpdatePasswordDto) {
-        const item = await this.userRepository.findOneOrFail({
-            select: ['password'],
-            where: { id: user.id },
-        });
-        if (!decrypt(oldPassword, item.password))
-            throw new ForbiddenException('old password not matched');
-        await this.userRepository.save({ id: user.id, password }, { reload: true });
-        return this.userService.detail(user.id);
-    }
-
-    /**
-     * 导入Jwt模块
-     */
-    static jwtModuleFactory(configure: Configure) {
-        return JwtModule.registerAsync({
-            useFactory: async (): Promise<JwtModuleOptions> => {
-                const config = await configure.get<UserConfig>(
-                    'user',
-                    defaultUserConfig(configure),
-                );
-                const option: JwtModuleOptions = {
-                    secret: configure.env.get('USER_TOKEN_SECRET', 'my-access-secret'),
-                    verifyOptions: {
-                        ignoreExpiration: !configure.env.isProd(),
-                    },
-                };
-                if (configure.env.isProd()) {
-                    option.signOptions = { expiresIn: `${config.jwt.token_expired}s` };
-                }
-                return option;
-            },
-        });
-    }
 }

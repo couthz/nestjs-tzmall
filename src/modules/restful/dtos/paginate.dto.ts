@@ -15,7 +15,7 @@ export class PaginateDto implements PaginateOptions {
     @Min(1, { message: '当前页必须大于1' })
     @IsNumber()
     @IsOptional()
-    page?: number = 1;
+    current?: number = 1;
 
     /**
      * 每页数据量
@@ -24,5 +24,5 @@ export class PaginateDto implements PaginateOptions {
     @Min(1, { message: '每页显示数据必须大于1' })
     @IsNumber()
     @IsOptional()
-    limit?: number = 10;
+    size?: number = 10;
 }

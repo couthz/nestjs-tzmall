@@ -1,5 +1,5 @@
 import { BadGatewayException, Global, Module, ModuleMetadata, Type } from '@nestjs/common';
-import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { useContainer } from 'class-validator';
 
 import { isNil, omit } from 'lodash';
@@ -11,11 +11,15 @@ import { ConfigureFactory, ConfigureRegister } from '@/modules/config/types';
 
 import { getDefaultAppConfig } from '../constants';
 import { CoreModule } from '../core.module';
-import { AppFilter, AppIntercepter, AppPipe } from '../providers';
+import { AppIntercepter, AppPipe } from '../providers';
 import { App, AppConfig, CreateOptions } from '../types';
 
 import { createCommands } from './command';
 import { CreateModule } from './utils';
+import {APP_FILTER } from '@nestjs/core/constants';
+import { ApiTransformInterceptor } from '../providers/api-transform.interceptor';
+import { ApiExceptionFilter } from '../providers/api-exception.filter';
+import { AuthGuard } from '../guards/auth.guard';
 
 // app实例常量
 export const app: App = { configure: new Configure(), commands: [] };
@@ -48,6 +52,7 @@ export const createApp = (options: CreateOptions) => async (): Promise<App> => {
         fallbackOnErrors: true,
     });
     app.commands = await createCommands(options.commands, app as Required<App>);
+    
     return app;
 };
 
@@ -100,20 +105,24 @@ export async function createBootModule(
             provide: APP_INTERCEPTOR,
             useClass: globals.interceptor ?? AppIntercepter,
         });
+        providers.push({
+            provide: APP_INTERCEPTOR,
+            useClass: globals.interceptor ?? ApiTransformInterceptor,
+        });
     }
     if (globals.filter !== null) {
         providers.push({
             provide: APP_FILTER,
-            useClass: AppFilter,
+            useClass: ApiExceptionFilter,
         });
     }
 
-    if (!isNil(globals.guard)) {
+    // if (!isNil(globals.guard)) {
         providers.push({
             provide: APP_GUARD,
-            useClass: globals.guard,
+            useClass: AuthGuard,
         });
-    }
+
 
     return CreateModule('BootModule', () => {
         const meta: ModuleMetadata = {

@@ -2,10 +2,6 @@
  * 数据库配置
  */
 
-import { ContentFactory } from '@/database/factories/content.factory';
-import { UserFactory } from '@/database/factories/user.factory';
-import ContentSeeder from '@/database/seeders/content.seeder';
-import UserSeeder from '@/database/seeders/user.seeder';
 import { createDbConfig } from '@/modules/database/helpers';
 
 export const database = createDbConfig((configure) => ({
@@ -16,13 +12,12 @@ export const database = createDbConfig((configure) => ({
         {
             // 以下为mysql配置
             type: 'mysql',
-            host: '127.0.0.1',
-            port: 3306,
-            username: 'root',
-            password: '12345678',
-            database: '3r',
-            factories: [UserFactory, ContentFactory],
-            seeders: [UserSeeder, ContentSeeder],
+            host: process.env.MYSQL_HOST,
+            port: parseInt(process.env.MYSQL_PORT,10),
+            username: process.env.MYSQL_USERNAME,
+            password: process.env.MYSQL_PASSWORD,
+            database: process.env.MYSQL_DATABASE,
+            timezone: "+08:00",
         },
         // {
         // 以下为sqlite配置

@@ -1,100 +1,151 @@
-import { Exclude, Expose, Type } from 'class-transformer';
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-import {
-    Column,
-    CreateDateColumn,
-    DeleteDateColumn,
-    Entity,
-    ManyToMany,
-    OneToMany,
-    PrimaryColumn,
-    UpdateDateColumn,
-} from 'typeorm';
+@Index("ud_user_mail", ["userMail"], { unique: true })
+@Index("ud_user_unique_mobile", ["userMobile"], { unique: true })
+@Index("ud_user_union_id", ["unionId"], { unique: true })
+@Entity("tz_user", { schema: "tz_shops" })
+export class User {
+  @PrimaryGeneratedColumn({ type: "bigint", name: "user_id", comment: "ID" })
+  userId: string;
 
-import type { Relation } from 'typeorm';
+  @Column("varchar", {
+    name: "nick_name",
+    nullable: true,
+    comment: "用户昵称",
+    length: 50,
+  })
+  nickName: string | null;
 
-import { CommentEntity, PostEntity } from '@/modules/content/entities';
+  @Column("varchar", {
+    name: "real_name",
+    nullable: true,
+    comment: "真实姓名",
+    length: 50,
+  })
+  realName: string | null;
 
-import { PermissionEntity, RoleEntity } from '@/modules/rbac/entities';
+  @Column("varchar", {
+    name: "user_mail",
+    nullable: true,
+    unique: true,
+    comment: "用户邮箱",
+    length: 100,
+  })
+  userMail: string | null;
 
-import { AccessTokenEntity } from './access-token.entity';
+  @Column("varchar", {
+    name: "login_password",
+    nullable: true,
+    comment: "登录密码",
+    length: 255,
+  })
+  loginPassword: string | null;
 
-/**
- * 用户模型
- */
-@Exclude()
-@Entity('users')
-export class UserEntity {
-    @Expose()
-    @PrimaryColumn({ type: 'varchar', generated: 'uuid', length: 36 })
-    id: string;
+  @Column("varchar", {
+    name: "pay_password",
+    nullable: true,
+    comment: "支付密码",
+    length: 50,
+  })
+  payPassword: string | null;
 
-    @Expose()
-    @Column({
-        comment: '姓名',
-        nullable: true,
-    })
-    nickname?: string;
+  @Column("varchar", {
+    name: "user_mobile",
+    nullable: true,
+    unique: true,
+    comment: "手机号码",
+    length: 50,
+  })
+  userMobile: string | null;
 
-    @Expose()
-    @Column({ comment: '用户名', unique: true })
-    username: string;
+  @UpdateDateColumn({ name: "modify_time", comment: "修改时间" })
+  modifyTime: Date;
 
-    @Column({ comment: '密码', length: 500, select: false })
-    password: string;
+  @CreateDateColumn({ name: "user_regtime", comment: "注册时间" })
+  userRegtime: Date;
 
-    @Expose()
-    @Column({ comment: '手机号', nullable: true, unique: true })
-    phone?: string;
+  @Column("varchar", {
+    name: "user_regip",
+    nullable: true,
+    comment: "注册IP",
+    length: 50,
+  })
+  userRegip: string | null;
 
-    @Expose()
-    @Column({ comment: '邮箱', nullable: true, unique: true })
-    email?: string;
+  @Column("datetime", {
+    name: "user_lasttime",
+    nullable: true,
+    comment: "最后登录时间",
+  })
+  userLasttime: Date | null;
 
-    @Expose()
-    @Type(() => Date)
-    @CreateDateColumn({
-        comment: '用户创建时间',
-    })
-    createdAt: Date;
+  @Column("varchar", {
+    name: "user_lastip",
+    nullable: true,
+    comment: "最后登录IP",
+    length: 50,
+  })
+  userLastip: string | null;
 
-    @Expose()
-    @Type(() => Date)
-    @UpdateDateColumn({
-        comment: '用户更新时间',
-    })
-    updatedAt: Date;
+  @Column("varchar", {
+    name: "user_memo",
+    nullable: true,
+    comment: "备注",
+    length: 500,
+  })
+  userMemo: string | null;
 
-    @Expose()
-    @Type(() => Date)
-    @DeleteDateColumn({
-        comment: '删除时间',
-    })
-    deletedAt: Date;
+  @Column("char", {
+    name: "sex",
+    nullable: true,
+    comment: "M(男) or F(女)",
+    length: 1,
+    default: () => "'M'",
+  })
+  sex: string | null;
 
-    @Expose()
-    @OneToMany(() => AccessTokenEntity, (accessToken) => accessToken.user, {
-        cascade: true,
-    })
-    accessTokens: Relation<AccessTokenEntity>[];
+  @Column("char", {
+    name: "birth_date",
+    nullable: true,
+    comment: "例如：2009-11-27",
+    length: 10,
+  })
+  birthDate: string | null;
 
-    @OneToMany(() => PostEntity, (post) => post.author, {
-        cascade: true,
-    })
-    posts: Relation<PostEntity>[];
+  @Column("varchar", {
+    name: "avatar_url",
+    nullable: true,
+    comment: "头像图片路径",
+    length: 255,
+  })
+  avatarUrl: string | null;
 
-    @OneToMany(() => CommentEntity, (comment) => comment.author, {
-        cascade: true,
-    })
-    comments: Relation<CommentEntity>[];
+  @Column("int", {
+    name: "status",
+    comment: "状态 1 正常 0 无效",
+    default: () => "'1'",
+  })
+  status: number;
 
-    @Expose()
-    @ManyToMany(() => RoleEntity, (role) => role.users, { cascade: true })
-    roles: Relation<RoleEntity>[];
+  @Column("int", { name: "score", nullable: true, comment: "用户积分" })
+  score: number | null;
 
-    @Expose()
-    @ManyToMany(() => PermissionEntity, (permisson) => permisson.users, {
-        cascade: true,
-    })
-    permissions: Relation<PermissionEntity>[];
+  @Column("varchar", { name: "open_id", nullable: true, length: 255 })
+  openId: string | null;
+
+  @Column("varchar", {
+    name: "union_id",
+    nullable: true,
+    unique: true,
+    length: 255,
+  })
+  unionId: string | null;
+
+  @Column("varchar", {
+    name: "user_wechat",
+    nullable: true,
+    comment: "用户微信号",
+    length: 255,
+  })
+  userWechat: string | null;
 }

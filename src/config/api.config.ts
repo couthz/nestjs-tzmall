@@ -1,9 +1,12 @@
+import { createAreaApi } from '@/modules/area/routes';
 import { Configure } from '@/modules/config/configure';
 import { ConfigureFactory } from '@/modules/config/types';
+import { createOrderApi } from '@/modules/order/routes';
+import { createProdApi } from '@/modules/prod/routes';
 
-import { createContentApi } from '@/modules/content/routes';
-import { createRbacApi } from '@/modules/rbac/routes';
 import { ApiConfig, VersionOption } from '@/modules/restful/types';
+import { createShopcartApi } from '@/modules/shopcart/routes';
+import { createUploadApi } from '@/modules/upload/routes';
 import { createUserApi } from '@/modules/user/routes';
 
 export const api: ConfigureFactory<ApiConfig> = {
@@ -20,8 +23,11 @@ export const api: ConfigureFactory<ApiConfig> = {
 
 export const v1 = async (configure: Configure): Promise<VersionOption> => {
     const userApi = createUserApi();
-    const rbacApi = createRbacApi();
-    const contentApi = createContentApi();
+    const orderApi = createOrderApi();
+    const prodApi = createProdApi();
+    const shopcartApi = createShopcartApi();
+    const uploadApi = createUploadApi();
+    const areaApi = createAreaApi();
     return {
         routes: [
             {
@@ -31,27 +37,34 @@ export const v1 = async (configure: Configure): Promise<VersionOption> => {
                 doc: {
                     title: '应用接口',
                     description: '客户端接口',
-                    tags: [...contentApi.tags.app, ...userApi.tags.app, ...rbacApi.tags.app],
+                    tags: [ ...userApi.tags.app, ...orderApi.tags.app, ...prodApi.tags.app, ...shopcartApi.tags.app, ...uploadApi.tags.app, ...areaApi.tags.app],
                 },
-                children: [...contentApi.routes.app, ...userApi.routes.app, ...rbacApi.routes.app],
+                children: [ ...userApi.routes.app, ...orderApi.routes.app, ...prodApi.routes.app, ...shopcartApi.routes.app, ...uploadApi.routes.app, ...areaApi.routes.app],
             },
             {
-                name: 'manage',
-                path: 'manage',
+                name: 'admin',
+                path: 'admin',
                 controllers: [],
                 doc: {
                     title: '管理端接口',
                     description: '应用的后台管理接口',
                     tags: [
-                        ...contentApi.tags.manage,
-                        ...userApi.tags.manage,
-                        ...rbacApi.tags.manage,
+
+                        ...userApi.tags.admin,
+                        ...orderApi.tags.admin,
+                        ...prodApi.tags.admin,
+                        ...shopcartApi.tags.admin,
+                        ...uploadApi.tags.admin,
+                        ...areaApi.tags.admin,
                     ],
                 },
                 children: [
-                    ...contentApi.routes.manage,
-                    ...userApi.routes.manage,
-                    ...rbacApi.routes.manage,
+                    ...userApi.routes.admin,
+                    ...orderApi.routes.admin,
+                    ...prodApi.routes.admin,
+                    ...shopcartApi.routes.admin,
+                    ...uploadApi.routes.admin,
+                    ...areaApi.routes.admin,
                 ],
             },
         ],

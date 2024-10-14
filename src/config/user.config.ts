@@ -1,3 +1,3 @@
-import { createUserConfig } from '@/modules/user/helpers';
+// import { createUserConfig } from '@/modules/user/helpers';
 
-export const user = createUserConfig(() => ({}));
+// export const user = createUserConfig(() => ({}));
