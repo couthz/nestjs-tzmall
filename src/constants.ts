@@ -60,7 +60,7 @@ export const createOptions: CreateOptions = {
             BootModule,
             new FastifyAdapter(),
             {
-                cors: true,
+                cors: false,
                 logger: ['error', 'warn'],
             },
         );
